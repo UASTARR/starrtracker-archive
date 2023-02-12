@@ -1,2 +1,2 @@
-# starrtracker
-A program for STARR's custom ground station to help with rocket recovery during competitions.
+# StarrTracker
+StarrTracker is the tentative name for our group's program used to remotely track the flight trajectory of our rockets during competitions. Each rocket is equipped with a GPS transmitter that allows us to measure the location and altitude of the rocket in real time. StarrTracker provides an interface for the group to watch the location and altitude of the rocket as it updates us with new geospatial information. StarrTracker is intended to run on STARR's custom ground station computer, which is a computer system to be used in the field at rocketry competition sites. It is equipped with the necessary GPS hardware to exchange information with the rocket during flight, which will allow it to be tracked in real time during flight.
