@@ -14,18 +14,109 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>61</width>
-      <height>21</height>
+      <x>-1</x>
+      <y>-1</y>
+      <width>1281</width>
+      <height>681</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Hello World!</string>
-    </property>
+    <layout class="QHBoxLayout" name="mainLayout" stretch="964,316">
+     <item>
+      <layout class="QVBoxLayout" name="layout_MapView" stretch="64,656">
+       <item>
+        <layout class="QHBoxLayout" name="layout_LiveRocketView">
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="Label_LiveRocketView">
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Live Rocket View</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Map View Widget Goes Here</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="layout_Settings" stretch="1,2">
+       <item>
+        <layout class="QGridLayout" name="layout_Serial">
+         <item row="0" column="0">
+          <widget class="QPushButton" name="tempSerialGoesHere">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Serial Connection Stuff Goes Here</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="layout_AppSettings">
+         <item row="0" column="0">
+          <widget class="QPushButton" name="tempSettingsGoesHere">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Settings Go Here</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -37,8 +128,32 @@
      <height>13</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionExit_Program"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout_StarrTracker"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAbout_StarrTracker">
+   <property name="text">
+    <string>About StarrTracker</string>
+   </property>
+  </action>
+  <action name="actionExit_Program">
+   <property name="text">
+    <string>Exit Program</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
