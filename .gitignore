@@ -71,3 +71,6 @@ Thumbs.db
 *.dll
 *.exe
 
+# Other
+moc_predefs.h
+starrtracker
