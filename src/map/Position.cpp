@@ -1,4 +1,4 @@
-#include "position.h"
+#include "Position.h"
 
 Position::Position(double lat, double longi) {
     latitude_ = lat;

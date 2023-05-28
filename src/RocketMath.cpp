@@ -1,6 +1,7 @@
 #include <math.h>  // sin(), cos(), atan2(), sqrt()
 
-#include "map/position.h"
+#include "RocketMath.h"
+#include "map/Position.h"
 
 RocketMath::haversine2D(const Position& p1, const Position& p2) {
     // Calculates the distance between two points along the surface of the Earth.

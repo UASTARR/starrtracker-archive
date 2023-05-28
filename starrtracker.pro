@@ -17,11 +17,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    map/position.cpp \
+    src/map/position.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
-    map/position.h \
+    src/map/position.h \
     ui/mainwindow.h
 
 FORMS += \
