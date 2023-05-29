@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>StarrTracker</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="horizontalLayoutWidget">
@@ -73,21 +73,43 @@
        <item>
         <layout class="QGridLayout" name="layout_Serial">
          <item row="0" column="0">
-          <widget class="QPushButton" name="tempSerialGoesHere">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Serial Connections</string>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>24</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Serial Connection Stuff Goes Here</string>
-           </property>
+           <widget class="QComboBox" name="comboBox">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>30</y>
+              <width>79</width>
+              <height>22</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>113</width>
+              <height>22</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="serialConnectionButton">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>90</y>
+              <width>80</width>
+              <height>22</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -125,7 +147,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>13</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
