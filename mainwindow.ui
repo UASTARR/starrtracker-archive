@@ -49,22 +49,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Map View Widget Goes Here</string>
-         </property>
-        </widget>
+        <widget class="StreetMapView" name="map_view" native="true"/>
        </item>
       </layout>
      </item>
