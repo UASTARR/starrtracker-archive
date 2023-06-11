@@ -19,10 +19,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     src/map/Position.cpp \
+    src/serial/gpsparser.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
     src/map/position.h \
+    src/serial/gpsparser.h \
     ui/mainwindow.h
 
 FORMS += \
