@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
     connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
-
+    connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
 
     for (const QSerialPortInfo &serialPortInfo : serialPortInfos) {
@@ -34,25 +34,34 @@ MainWindow::~MainWindow()
 
 
 void MainWindow::openSerialPort() {
+
+
     ui->serialConnectionButton->setEnabled(false);
 
-    m_serial->setPortName(ui->comboBox->currentText());
-    m_serial->setBaudRate(QSerialPort::Baud9600);
-    m_serial->setDataBits(QSerialPort::Data8);
-    m_serial->setParity(QSerialPort::NoParity);
-    m_serial->setStopBits(QSerialPort::OneStop);
-    m_serial->setFlowControl(QSerialPort::NoFlowControl);
-    if (m_serial->open(QIODevice::ReadWrite)) {
-        // UI logic here?
-    } else {
-        QMessageBox::critical(this, tr("Error"), m_serial->errorString());
-    }
+//    m_serial->setPortName(ui->comboBox->currentText());
+//    m_serial->setBaudRate(QSerialPort::Baud9600);
+//    m_serial->setDataBits(QSerialPort::Data8);
+//    m_serial->setParity(QSerialPort::NoParity);
+//    m_serial->setStopBits(QSerialPort::OneStop);
+//    m_serial->setFlowControl(QSerialPort::NoFlowControl);
+//    if (m_serial->open(QIODevice::ReadWrite)) {
+//        // UI logic here?
+//    } else {
+//        QMessageBox::critical(this, tr("Error"), m_serial->errorString());
+//    }
+
+    m_thread.startSerialThread(ui->comboBox->currentText());
 }
 
 void MainWindow::closeSerialPort() {
     if (m_serial->isOpen())
         m_serial->close();
     QMessageBox::information(this,tr("Disconnected"),tr("Wow! The serial port closed!"));
+}
+
+void MainWindow::handleThreadError(const QString &s)
+{
+    QMessageBox::critical(this, tr("Critical Error"), s);
 }
 
 void MainWindow::handleError(QSerialPort::SerialPortError error) {

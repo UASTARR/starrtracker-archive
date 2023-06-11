@@ -20,11 +20,13 @@ SOURCES += \
     main.cpp \
     src/map/Position.cpp \
     src/serial/gpsparser.cpp \
+    src/serial/serialthread.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
     src/map/position.h \
     src/serial/gpsparser.h \
+    src/serial/serialthread.h \
     ui/mainwindow.h
 
 FORMS += \

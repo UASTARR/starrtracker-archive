@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSerialPort>
+#include "../src/serial/serialthread.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,6 +20,7 @@ private slots:
     void readData();
 
     void handleError(QSerialPort::SerialPortError error);
+    void handleThreadError(const QString &s);
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -27,5 +29,6 @@ public:
 private:
     Ui::MainWindow *ui;
     QSerialPort *m_serial = nullptr;
+    SerialThread m_thread;
 };
 #endif // MAINWINDOW_H
