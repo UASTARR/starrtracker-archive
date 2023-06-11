@@ -18,7 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    src/map/position.cpp \
+    src/map/Position.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
