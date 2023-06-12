@@ -14,6 +14,7 @@ public:
     ~SerialThread();
 
     void startSerialThread(const QString &port);
+    void stopSerialThread();
 
 signals:
     void error(const QString &s);

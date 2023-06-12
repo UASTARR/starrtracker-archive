@@ -27,6 +27,13 @@ void SerialThread::startSerialThread(const QString &port)
     }
 }
 
+void SerialThread::stopSerialThread()
+{
+    m_mutex.lock();
+    m_quit = true;
+    m_mutex.unlock();
+}
+
 void SerialThread::run()
 {
     m_mutex.lock();
@@ -55,6 +62,9 @@ void SerialThread::run()
         while (serial.waitForReadyRead(-1))
         {
             data = serial.readLine();
+            m_gpsTracker.parse(data);
         }
     }
+
+    serial.close();
 }

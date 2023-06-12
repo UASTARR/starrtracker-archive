@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
     connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
+    connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
     connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
 
@@ -54,8 +55,10 @@ void MainWindow::openSerialPort() {
 }
 
 void MainWindow::closeSerialPort() {
-    if (m_serial->isOpen())
-        m_serial->close();
+//    if (m_serial->isOpen())
+//        m_serial->close();
+
+    m_thread.stopSerialThread();
     QMessageBox::information(this,tr("Disconnected"),tr("Wow! The serial port closed!"));
 }
 
