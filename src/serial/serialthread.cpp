@@ -65,7 +65,7 @@ void SerialThread::run()
             while (serial.canReadLine())
             {
                 data = serial.readLine();
-                qInfo(data);
+                m_gpsTracker.parse(data);
             }
 //            char buf[1024];
 //            qint64 lineLength = serial.readLine(buf, sizeof(buf));
