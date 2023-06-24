@@ -14,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit->setValidator( new QIntValidator(300,250000,this) ); // LineEdit Could be used for Baud Rate selection, though it's not an elegant solution. Does nothing currently.
     ui->comboBox->clear(); // Pointless?
 
-    connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
-    connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
+    //connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
+    //connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
     connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
     connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
@@ -79,6 +79,6 @@ void MainWindow::writeData(const QByteArray &data) {
 }
 
 void MainWindow::readData() {
-    const QByteArray data = m_serial->readAll();
-    std::cout << data.constData(); // This only sometimes works and can be seen in the Application Output. The issue is probably with readAll(). This should be removed and replaced by actual data processing.
+    //const QByteArray data = m_serial->readAll();
+    //std::cout << data.constData(); // This only sometimes works and can be seen in the Application Output. The issue is probably with readAll(). This should be removed and replaced by actual data processing.
 }

@@ -1,6 +1,7 @@
 #include "serialthread.h"
 
 #include <QSerialPort>
+#include <QDebug>
 
 SerialThread::SerialThread(QObject *parent)
     : QThread(parent)
@@ -61,10 +62,21 @@ void SerialThread::run()
         QByteArray data;
         while (serial.waitForReadyRead(-1))
         {
-            data = serial.readLine();
-            m_gpsTracker.parse(data);
+            while (serial.canReadLine())
+            {
+                data = serial.readLine();
+                qInfo(data);
+            }
+//            char buf[1024];
+//            qint64 lineLength = serial.readLine(buf, sizeof(buf));
+//            if (lineLength != -1)
+//            {
+//                data = QByteArray::fromRawData(buf,lineLength);
+//                m_gpsTracker.parse(data);
+//            }
         }
-    }
 
     serial.close();
+
+    }
 }
