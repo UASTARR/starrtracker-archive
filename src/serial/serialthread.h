@@ -23,6 +23,7 @@ private:
     void run() override;
     QMutex m_mutex;
     bool m_quit = false;
+    bool checkForQuitFlag();
     GPSParser m_gpsTracker;
     QString m_port;
 };

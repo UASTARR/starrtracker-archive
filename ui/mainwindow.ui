@@ -80,19 +80,9 @@
            <widget class="QComboBox" name="comboBox">
             <property name="geometry">
              <rect>
-              <x>10</x>
+              <x>50</x>
               <y>30</y>
               <width>79</width>
-              <height>22</height>
-             </rect>
-            </property>
-           </widget>
-           <widget class="QLineEdit" name="lineEdit">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>60</y>
-              <width>113</width>
               <height>22</height>
              </rect>
             </property>
@@ -101,26 +91,78 @@
             <property name="geometry">
              <rect>
               <x>10</x>
-              <y>90</y>
+              <y>60</y>
               <width>80</width>
               <height>22</height>
              </rect>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>Start</string>
             </property>
            </widget>
            <widget class="QPushButton" name="serialTerminationButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="geometry">
              <rect>
               <x>100</x>
-              <y>90</y>
+              <y>60</y>
               <width>80</width>
               <height>22</height>
              </rect>
             </property>
             <property name="text">
-             <string>PushButton</string>
+             <string>Stop</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>30</y>
+              <width>31</width>
+              <height>17</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Port</string>
+            </property>
+           </widget>
+           <widget class="QTextBrowser" name="textBrowser">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>90</y>
+              <width>291</width>
+              <height>131</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QLineEdit" name="baudSelect">
+            <property name="geometry">
+             <rect>
+              <x>210</x>
+              <y>30</y>
+              <width>81</width>
+              <height>25</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>9600</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_2">
+            <property name="geometry">
+             <rect>
+              <x>140</x>
+              <y>30</y>
+              <width>71</width>
+              <height>17</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Baud rate</string>
             </property>
            </widget>
           </widget>
@@ -160,7 +202,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

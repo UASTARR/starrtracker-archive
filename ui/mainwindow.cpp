@@ -3,6 +3,7 @@
 #include <QSerialPortInfo>
 #include <QSerialPort>
 #include <QMessageBox>
+#include <QTextStream>
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -11,11 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
     , m_serial( new QSerialPort(this) )
 {
     ui->setupUi(this);
-    ui->lineEdit->setValidator( new QIntValidator(300,250000,this) ); // LineEdit Could be used for Baud Rate selection, though it's not an elegant solution. Does nothing currently.
+    ui->baudSelect->setValidator( new QIntValidator(300,250000,this) ); // LineEdit Could be used for Baud Rate selection, though it's not an elegant solution. Does nothing currently.
+    ui->baudSelect->setEnabled(false); // Enable when baud rate can be changed
     ui->comboBox->clear(); // Pointless?
 
-    //connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
-    //connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
     connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
     connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
@@ -30,36 +30,43 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    // If  serialThread is still running, try closing port. If that doesn't work, serial thread is force closed
+    if (m_thread.isRunning())
+    {
+        closeSerialPort();
+        if (m_thread.isRunning())
+        {
+            QTextStream(stdout) <<  tr("Warning: Force quit serialThread\n");
+            m_thread.terminate();
+        }
+    }
+
     delete ui;
 }
 
 
-void MainWindow::openSerialPort() {
-
-
+void MainWindow::openSerialPort()
+{
     ui->serialConnectionButton->setEnabled(false);
-
-//    m_serial->setPortName(ui->comboBox->currentText());
-//    m_serial->setBaudRate(QSerialPort::Baud9600);
-//    m_serial->setDataBits(QSerialPort::Data8);
-//    m_serial->setParity(QSerialPort::NoParity);
-//    m_serial->setStopBits(QSerialPort::OneStop);
-//    m_serial->setFlowControl(QSerialPort::NoFlowControl);
-//    if (m_serial->open(QIODevice::ReadWrite)) {
-//        // UI logic here?
-//    } else {
-//        QMessageBox::critical(this, tr("Error"), m_serial->errorString());
-//    }
+    ui->serialTerminationButton->setEnabled(true);
 
     m_thread.startSerialThread(ui->comboBox->currentText());
 }
 
 void MainWindow::closeSerialPort() {
-//    if (m_serial->isOpen())
-//        m_serial->close();
+    if (m_serial->isOpen())
+        m_serial->close();
 
     m_thread.stopSerialThread();
-    QMessageBox::information(this,tr("Disconnected"),tr("Wow! The serial port closed!"));
+
+    if (m_thread.wait(time))
+    {
+        QMessageBox::information(this,tr("Disconnected"),tr("Wow! The serial port closed!"));
+        ui->serialConnectionButton->setEnabled(true);
+        ui->serialTerminationButton->setEnabled(false);
+    }
+    else
+        QMessageBox::critical(this, tr("Critical Error"), tr("Failed to close thread"));
 }
 
 void MainWindow::handleThreadError(const QString &s)
@@ -72,6 +79,11 @@ void MainWindow::handleError(QSerialPort::SerialPortError error) {
         QMessageBox::critical(this, tr("Critical Error"), m_serial->errorString());
         closeSerialPort();
     }
+}
+
+void MainWindow::setData(const QString data)
+{
+    ui->textBrowser->setText(data);
 }
 
 void MainWindow::writeData(const QByteArray &data) {

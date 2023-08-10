@@ -35,48 +35,47 @@ void SerialThread::stopSerialThread()
     m_mutex.unlock();
 }
 
+bool SerialThread::checkForQuitFlag()
+{
+    bool temp;
+    m_mutex.lock();
+    temp = m_quit;
+    m_mutex.unlock();
+    return temp;
+}
+
 void SerialThread::run()
 {
     m_mutex.lock();
-    // Stuff
     QString currentPort = m_port;
     m_mutex.unlock();
 
     QSerialPort serial;
 
-    while (!m_quit)
+    serial.setPortName(currentPort);
+    serial.setBaudRate(QSerialPort::Baud9600);
+    serial.setDataBits(QSerialPort::Data8);
+    serial.setParity(QSerialPort::NoParity);
+    serial.setStopBits(QSerialPort::OneStop);
+    serial.setFlowControl(QSerialPort::NoFlowControl);
+
+    if (!serial.open(QIODevice::ReadWrite))
     {
-        serial.setPortName(currentPort);
-        serial.setBaudRate(QSerialPort::Baud9600);
-        serial.setDataBits(QSerialPort::Data8);
-        serial.setParity(QSerialPort::NoParity);
-        serial.setStopBits(QSerialPort::OneStop);
-        serial.setFlowControl(QSerialPort::NoFlowControl);
+        emit error(tr("Failed to open port %1, error: %2").arg(m_port).arg(serial.error()));
+        return;
+    }
 
-        if (!serial.open(QIODevice::ReadWrite))
+    QByteArray data;
+    while (serial.waitForReadyRead(-1))
+    {
+        while (serial.canReadLine())
         {
-            emit error(tr("Failed to open port %1, error: %2").arg(m_port).arg(serial.error()));
-            return;
+            data = serial.readLine();
+            m_gpsTracker.parse(data);
         }
-
-        QByteArray data;
-        while (serial.waitForReadyRead(-1))
-        {
-            while (serial.canReadLine())
-            {
-                data = serial.readLine();
-                m_gpsTracker.parse(data);
-            }
-//            char buf[1024];
-//            qint64 lineLength = serial.readLine(buf, sizeof(buf));
-//            if (lineLength != -1)
-//            {
-//                data = QByteArray::fromRawData(buf,lineLength);
-//                m_gpsTracker.parse(data);
-//            }
-        }
+        if (checkForQuitFlag())
+            break;
+    }
 
     serial.close();
-
-    }
 }
