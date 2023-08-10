@@ -17,6 +17,7 @@ public:
     void stopSerialThread();
 
 signals:
+    void dataReady(const QStringList &data);
     void error(const QString &s);
 
 private:

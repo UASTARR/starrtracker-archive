@@ -66,12 +66,15 @@ void SerialThread::run()
     }
 
     QByteArray data;
+    QStringList result;
     while (serial.waitForReadyRead(-1))
     {
         while (serial.canReadLine())
         {
             data = serial.readLine();
-            m_gpsTracker.parse(data);
+            result = m_gpsTracker.parse(data);
+            if (result.size() == 2)
+                emit dataReady(result);
         }
         if (checkForQuitFlag())
             break;

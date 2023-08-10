@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
     connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
     connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
+    connect(&m_thread, &SerialThread::dataReady, this, &MainWindow::handleDataReady);
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
 
     for (const QSerialPortInfo &serialPortInfo : serialPortInfos) {
@@ -81,9 +82,10 @@ void MainWindow::handleError(QSerialPort::SerialPortError error) {
     }
 }
 
-void MainWindow::setData(const QString data)
+void MainWindow::handleDataReady(const QStringList &data)
 {
-    ui->textBrowser->setText(data);
+    ui->gpsType->setText(data[0]);
+    ui->textBrowser->setText(data[1]);
 }
 
 void MainWindow::writeData(const QByteArray &data) {

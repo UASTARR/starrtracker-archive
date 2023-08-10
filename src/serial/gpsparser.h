@@ -12,7 +12,7 @@ public:
     explicit GPSParser(QObject *parent = nullptr);
     ~GPSParser();
 
-    void parse(QByteArray& data);
+    QStringList parse(QByteArray& data);
     double getLongitude();
     double getLatitude();
 

@@ -21,16 +21,16 @@ private slots:
 
     void handleError(QSerialPort::SerialPortError error);
     void handleThreadError(const QString &s);
+    void handleDataReady(const QStringList &data);
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void setData(QString data);
 
 private:
     Ui::MainWindow *ui;
     QSerialPort *m_serial = nullptr;
     SerialThread m_thread;
-    unsigned long time = 1000; // Time for program to wait for serialThread to close, in ms
+    unsigned long time = 5000; // Time for program to wait for serialThread to close, in ms
 };
 #endif // MAINWINDOW_H
