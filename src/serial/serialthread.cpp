@@ -7,21 +7,20 @@ SerialThread::SerialThread(QObject *parent)
     : QThread(parent)
     , m_gpsTracker()
 {
-
+    m_stop = false;
 }
 
 SerialThread::~SerialThread()
 {
-    m_mutex.lock();
-    m_quit = true;
-    m_mutex.unlock();
+    setStopFlag(true);
     wait();
 }
 
-void SerialThread::startSerialThread(const QString &port)
+void SerialThread::startSerialThread(const QString &port, const qint32 &baud)
 {
     const QMutexLocker locker(&m_mutex);
     m_port = port;
+    m_baud  = baud;
     if (!isRunning())
     {
         start();
@@ -30,30 +29,53 @@ void SerialThread::startSerialThread(const QString &port)
 
 void SerialThread::stopSerialThread()
 {
+    setStopFlag(true);
+}
+
+void SerialThread::setStopFlag(bool newState)
+{
     m_mutex.lock();
-    m_quit = true;
+    m_stop = newState;
     m_mutex.unlock();
 }
 
-bool SerialThread::checkForQuitFlag()
+bool SerialThread::getStopFlag()
 {
     bool temp;
     m_mutex.lock();
-    temp = m_quit;
+    temp = m_stop;
+    m_mutex.unlock();
+    return temp;
+}
+
+QString SerialThread::getPort()
+{
+    QString temp;
+    m_mutex.lock();
+    temp = m_port;
+    m_mutex.unlock();
+    return temp;
+}
+
+qint32 SerialThread::getBaud()
+{
+    qint32 temp;
+    m_mutex.lock();
+    temp = m_baud;
     m_mutex.unlock();
     return temp;
 }
 
 void SerialThread::run()
 {
-    m_mutex.lock();
-    QString currentPort = m_port;
-    m_mutex.unlock();
-
     QSerialPort serial;
+    QString port;
+    qint32 baudRate;
 
-    serial.setPortName(currentPort);
-    serial.setBaudRate(QSerialPort::Baud9600);
+    port = getPort();
+    baudRate = getBaud();
+    serial.setPortName(port);
+    serial.setBaudRate(baudRate);
     serial.setDataBits(QSerialPort::Data8);
     serial.setParity(QSerialPort::NoParity);
     serial.setStopBits(QSerialPort::OneStop);
@@ -61,23 +83,27 @@ void SerialThread::run()
 
     if (!serial.open(QIODevice::ReadWrite))
     {
-        emit error(tr("Failed to open port %1, error: %2").arg(m_port).arg(serial.error()));
+        emit error(tr("Failed to open port %1, error: %2").arg(port).arg(serial.error()));
         return;
     }
-
-    QByteArray data;
-    QStringList result;
-    while (serial.waitForReadyRead(-1))
+    else
     {
-        while (serial.canReadLine())
+        QByteArray data;
+        QStringList result;
+        while (serial.waitForReadyRead(-1))
         {
-            data = serial.readLine();
-            result = m_gpsTracker.parse(data);
-            if (result.size() == 2)
-                emit dataReady(result);
+            while (serial.canReadLine())
+            {
+                data = serial.readLine();
+                result = m_gpsTracker.parse(data);
+                if (result.size() == 2)
+                    emit dataReady(result);
+            }
+            if (getStopFlag())
+            {
+                break;
+            }
         }
-        if (checkForQuitFlag())
-            break;
     }
 
     serial.close();

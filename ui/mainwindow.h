@@ -17,7 +17,6 @@ private slots:
     void openSerialPort();
     void closeSerialPort();
     void writeData(const QByteArray &data);
-    void readData();
 
     void handleError(QSerialPort::SerialPortError error);
     void handleThreadError(const QString &s);

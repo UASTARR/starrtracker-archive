@@ -13,7 +13,7 @@ public:
     SerialThread(QObject *parent = nullptr);
     ~SerialThread();
 
-    void startSerialThread(const QString &port);
+    void startSerialThread(const QString &port, const qint32 &baud);
     void stopSerialThread();
 
 signals:
@@ -22,11 +22,16 @@ signals:
 
 private:
     void run() override;
+
     QMutex m_mutex;
-    bool m_quit = false;
-    bool checkForQuitFlag();
-    GPSParser m_gpsTracker;
+    bool m_stop;
+    void setStopFlag(bool newState);
+    bool getStopFlag();
     QString m_port;
+    QString getPort();
+    qint32 m_baud;
+    qint32 getBaud();
+    GPSParser m_gpsTracker;
 };
 
 #endif // SERIALTHREAD_H

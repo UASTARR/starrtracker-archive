@@ -12,9 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_serial( new QSerialPort(this) )
 {
     ui->setupUi(this);
-    ui->baudSelect->setValidator( new QIntValidator(300,250000,this) ); // LineEdit Could be used for Baud Rate selection, though it's not an elegant solution. Does nothing currently.
-    ui->baudSelect->setEnabled(false); // Enable when baud rate can be changed
-    ui->comboBox->clear(); // Pointless?
+    ui->portSelect->clear();
 
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
     connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
@@ -23,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
 
     for (const QSerialPortInfo &serialPortInfo : serialPortInfos) {
-        ui->comboBox->addItem(serialPortInfo.portName()); // If working in WSL 2, you need to pass the USB connection through for this to work.
+        ui->portSelect->addItem(serialPortInfo.portName()); // If working in WSL 2, you need to pass the USB connection through for this to work.
     }
 
 
@@ -31,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    if (m_serial->isOpen())
+        m_serial->close();
+
     // If  serialThread is still running, try closing port. If that doesn't work, serial thread is force closed
     if (m_thread.isRunning())
     {
@@ -48,10 +49,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::openSerialPort()
 {
+    ui->portSelect->setEnabled(false);
+    ui->baudSelect->setEnabled(false);
     ui->serialConnectionButton->setEnabled(false);
     ui->serialTerminationButton->setEnabled(true);
 
-    m_thread.startSerialThread(ui->comboBox->currentText());
+    m_thread.startSerialThread(ui->portSelect->currentText(), (ui->baudSelect->currentText()).toInt(nullptr, 10));
 }
 
 void MainWindow::closeSerialPort() {
@@ -63,7 +66,6 @@ void MainWindow::closeSerialPort() {
     if (m_thread.wait(time))
     {
         QMessageBox::information(this,tr("Disconnected"),tr("Wow! The serial port closed!"));
-        ui->serialConnectionButton->setEnabled(true);
         ui->serialTerminationButton->setEnabled(false);
     }
     else
@@ -90,9 +92,4 @@ void MainWindow::handleDataReady(const QStringList &data)
 
 void MainWindow::writeData(const QByteArray &data) {
     m_serial->write(data);
-}
-
-void MainWindow::readData() {
-    //const QByteArray data = m_serial->readAll();
-    //std::cout << data.constData(); // This only sometimes works and can be seen in the Application Output. The issue is probably with readAll(). This should be removed and replaced by actual data processing.
 }
