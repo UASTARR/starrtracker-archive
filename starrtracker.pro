@@ -18,11 +18,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    src/RocketMath.cpp \
+    src/map/FlightTrajectory.cpp \
+    src/map/Position.cpp \
+    src/map/position.cpp \
     src/serial/gpsparser.cpp \
     src/serial/serialthread.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
+    src/RocketMath.h \
+    src/map/FlightTrajectory.h \
+    src/map/Position.h \
+    src/map/position.h \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \
     ui/mainwindow.h
