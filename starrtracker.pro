@@ -17,10 +17,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    src/RocketMath.cpp \
+    src/map/FlightTrajectory.cpp \
+    src/map/Position.cpp \
     src/map/position.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
+    src/RocketMath.h \
+    src/map/FlightTrajectory.h \
+    src/map/Position.h \
     src/map/position.h \
     ui/mainwindow.h
 
