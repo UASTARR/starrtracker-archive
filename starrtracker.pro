@@ -1,4 +1,5 @@
 QT       += core gui
+QT       += serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,6 +22,8 @@ SOURCES += \
     src/map/FlightTrajectory.cpp \
     src/map/Position.cpp \
     src/map/position.cpp \
+    src/serial/gpsparser.cpp \
+    src/serial/serialthread.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
@@ -28,10 +31,14 @@ HEADERS += \
     src/map/FlightTrajectory.h \
     src/map/Position.h \
     src/map/position.h \
+    src/serial/gpsparser.h \
+    src/serial/serialthread.h \
     ui/mainwindow.h
 
 FORMS += \
     ui/mainwindow.ui
+
+INCLUDEPATH += $$PWD
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
