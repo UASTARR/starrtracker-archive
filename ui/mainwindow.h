@@ -22,6 +22,8 @@ private slots:
     void handleThreadError(const QString &s);
     void handleDataReady(const QStringList &data);
 
+    void realtimeDataSlot();
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
