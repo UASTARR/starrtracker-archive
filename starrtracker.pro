@@ -1,6 +1,6 @@
 QT       += core gui
 QT       += serialport
-QT       += charts
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++11
@@ -18,23 +18,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    #src/RocketMath.cpp \
-    #src/map/FlightTrajectory.cpp \
-    #src/map/Position.cpp \
-    #src/map/position.cpp \
+#    src/RocketMath.cpp \
+#    src/map/FlightTrajectory.cpp \
+#    src/map/Position.cpp \
+#    src/map/position.cpp \
+    src/graph/qcustomplot.cpp \
     src/serial/gpsparser.cpp \
     src/serial/serialthread.cpp \
-    src/graph/qcustomplot.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
-    #src/RocketMath.h \
-    #src/map/FlightTrajectory.h \
-    #src/map/Position.h \
-    #src/map/position.h \
+#    src/RocketMath.h \
+#    src/map/FlightTrajectory.h \
+#    src/map/Position.h \
+#    src/map/position.h \
+    src/graph/qcustomplot.h \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \
-    src/graph/qcustomplot.h \
     ui/mainwindow.h
 
 FORMS += \

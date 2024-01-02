@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>720</height>
+    <width>1224</width>
+    <height>745</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,13 +19,16 @@
      <rect>
       <x>-1</x>
       <y>-1</y>
-      <width>1281</width>
-      <height>681</height>
+      <width>1221</width>
+      <height>691</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="mainLayout" stretch="964,316">
-     <item>
-      <layout class="QVBoxLayout" name="layout_MapView" stretch="0,0">
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="leftMargin">
+      <number>6</number>
+     </property>
+     <item row="0" column="0">
+      <layout class="QVBoxLayout" name="layout_MapView" stretch="64,656">
        <item>
         <layout class="QHBoxLayout" name="layout_LiveRocketView">
          <property name="leftMargin">
@@ -49,23 +52,165 @@
         </layout>
        </item>
        <item>
-        <widget class="QCustomPlot" name="layout_graph" native="true">
+        <widget class="QPushButton" name="pushButton">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>  Map View Widget Goes Here                                                    </string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
-     <item>
-      <layout class="QVBoxLayout" name="layout_Settings" stretch="1,2">
+     <item row="1" column="0" colspan="2">
+      <layout class="QHBoxLayout" name="layout_Graph">
+       <property name="spacing">
+        <number>8</number>
+       </property>
+       <property name="leftMargin">
+        <number>2</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="layout_x_axis">
+         <item>
+          <widget class="QLabel" name="x_axis">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>  X Position (ddmm.mmmm)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCustomPlot" name="graph_x" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="whatsThis">
+            <string>Latitude</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="layout_y_axis">
+         <item>
+          <widget class="QLabel" name="y_axis">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>  Y Position (ddmm.mmmm)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCustomPlot" name="graph_y" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="whatsThis">
+            <string>Longitude
+</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="layout_altitude">
+         <item>
+          <widget class="QLabel" name="altitude">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Altitude&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>  Altitude (1 unit = 1m)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCustomPlot" name="graph_alt" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="whatsThis">
+            <string>Altitude</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1">
+      <layout class="QVBoxLayout" name="layout_Settings" stretch="0">
+       <property name="spacing">
+        <number>6</number>
+       </property>
        <item>
         <layout class="QGridLayout" name="layout_Serial">
          <item row="0" column="0">
           <widget class="QGroupBox" name="groupBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="title">
             <string>Serial Connections</string>
            </property>
@@ -113,29 +258,29 @@
              <rect>
               <x>10</x>
               <y>30</y>
-              <width>31</width>
+              <width>41</width>
               <height>17</height>
              </rect>
             </property>
             <property name="text">
-             <string>Port</string>
+             <string>Port </string>
             </property>
            </widget>
            <widget class="QTextBrowser" name="textBrowser">
             <property name="geometry">
              <rect>
               <x>10</x>
-              <y>120</y>
+              <y>110</y>
               <width>291</width>
-              <height>101</height>
+              <height>221</height>
              </rect>
             </property>
             <property name="html">
              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
            <widget class="QLabel" name="label_2">
@@ -143,8 +288,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>140</x>
               <y>30</y>
-              <width>71</width>
-              <height>17</height>
+              <width>81</width>
+              <height>20</height>
              </rect>
             </property>
             <property name="text">
@@ -155,8 +300,8 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>10</x>
-              <y>100</y>
-              <width>151</width>
+              <y>90</y>
+              <width>291</width>
               <height>17</height>
              </rect>
             </property>
@@ -164,7 +309,7 @@ p, li { white-space: pre-wrap; }
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>DataGPS</string>
             </property>
            </widget>
            <widget class="QComboBox" name="baudSelect">
@@ -251,28 +396,6 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
-       <item>
-        <layout class="QGridLayout" name="layout_AppSettings">
-         <item row="0" column="0">
-          <widget class="QPushButton" name="tempSettingsGoesHere">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>24</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Settings Go Here</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
      </item>
     </layout>
@@ -283,8 +406,8 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1280</width>
-     <height>22</height>
+     <width>1224</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

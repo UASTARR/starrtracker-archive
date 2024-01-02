@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSerialPort>
 #include "../src/serial/serialthread.h"
+#include "src/graph/qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,8 +23,6 @@ private slots:
     void handleThreadError(const QString &s);
     void handleDataReady(const QStringList &data);
 
-    void realtimeDataSlot();
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -33,5 +32,7 @@ private:
     QSerialPort *m_serial = nullptr;
     SerialThread m_thread;
     unsigned long time = 5000; // Time for program to wait for serialThread to close, in ms
+    QVector<double> qt_time, qt_x, qt_y, qt_alt;
+    QList<QCustomPlot *> values;
 };
 #endif // MAINWINDOW_H

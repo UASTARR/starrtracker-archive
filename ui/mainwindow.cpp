@@ -1,11 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "src/graph/qcustomplot.h"
 #include <QSerialPortInfo>
 #include <QSerialPort>
 #include <QMessageBox>
 #include <QTextStream>
 #include <iostream>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,38 +17,37 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
     connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
-    connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);     // Error
-    connect(&m_thread, &SerialThread::dataReady, this, &MainWindow::handleDataReady);   // Data
+    connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
+    connect(&m_thread, &SerialThread::dataReady, this, &MainWindow::handleDataReady);
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
 
     for (const QSerialPortInfo &serialPortInfo : serialPortInfos) {
         ui->portSelect->addItem(serialPortInfo.portName()); // If working in WSL 2, you need to pass the USB connection through for this to work.
     }
 
-    // Use the emit signal of data ready in serial thread to parse the data.
-    // Take the data and store it in a var
-    ui->layout_graph->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
-    ui->layout_graph->addGraph();       // TO add more lines, insert more of these statements
-    ui->layout_graph->graph(0)->setPen(QPen(QColor(40, 110, 255)));
+    values << ui->graph_x << ui->graph_y << ui->graph_alt;
 
-    QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
-    timeTicker->setTimeFormat("%h:%m:%s");
-    ui->layout_graph->xAxis->setTicker(timeTicker);
-    ui->layout_graph->axisRect()->setupFullAxesBox();
-    ui->layout_graph->yAxis->setRange(-1.2, 1.2);
-    // ui->layout_graph->yAxis->setRange(0, 1000);      // Y axis
+    // Graphing setup
+    foreach(QCustomPlot *plot, values){
+        plot->addGraph();
+        plot->graph(0)->setScatterStyle(QCPScatterStyle::ssCircle);
+        plot->graph(0)->setLineStyle(QCPGraph::lsLine);
+        plot->xAxis->setLabel("Time");          // X label
+        plot->xAxis->setRange(0, 1800);   // Range of x
+        plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
 
-    // Change the axis range in real time
-    connect(ui->layout_graph->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->layout_graph->xAxis2, SLOT(setRange(QCPRange)));
-    connect(ui->layout_graph->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->layout_graph->yAxis2, SLOT(setRange(QCPRange)));
+        // Test to check if graph works
+//        qt_time = {1, 2, 3, 4, 5, 6, 7};
+//        qt_x = {4000, 5000, 300, 7000, 2000, 8000, 9000};
+//        plot->graph(0)->setData(qt_time, qt_x);
+//        plot->rescaleAxes();
+//        plot->replot();
+//        plot->update();
+    }
 
-    // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
-    QTimer dataTimer;
-    //connect(dataTimer, &QTimer::timeout, this, SLOT(realtimeDataSlot()));
-    //dataTimer->start(1000); // Interval 0 means to refresh as fast as possible
-    connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
-    dataTimer.start(0);
-
+    ui->graph_x->yAxis->setRange(-9000, 9000);
+    ui->graph_y->yAxis->setRange(-18000, 18000);
+    ui->graph_alt->yAxis->setRange(0, 1800);
 }
 
 MainWindow::~MainWindow()
@@ -110,30 +109,32 @@ void MainWindow::handleError(QSerialPort::SerialPortError error) {
 
 void MainWindow::handleDataReady(const QStringList &data)
 {
+    // Possible optimization, check if length of vector exceeded certain limit and clear it after that
+    // change below based on featherweight gps data.
+
+    // Storing all data to vectors
+    qt_time.append(data[1].toDouble());
+    if (data[3] == "N") qt_x.append(data[2].toDouble());        // + for N
+        else qt_x.append(-data[2].toDouble());                  // - for S
+    if (data[5] == "E") qt_y.append(data[4].toDouble());        // + for E
+        else qt_y.append(-data[4].toDouble());                  // - for W
+    if (data[10] == "m" or data[10] == "M") qt_alt.append(data[9].toDouble());     // altitude in m
+        else qt_alt.append(0.3048*data[9].toDouble());          // Convert feet to m
+
     ui->gpsType->setText(data[0]);
-    ui->textBrowser->setText(data[1]);
+    ui->textBrowser->setText(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatillites Used: %7\n Altitude: %8 %9\n").arg(data[1],data[2],data[3],data[4],data[5],data[6],data[7], data[9], data[10]));
+
+    ui->graph_x->graph(0)->setData(qt_time, qt_x);
+    ui->graph_y->graph(0)->setData(qt_time, qt_y);
+    ui->graph_alt->graph(0)->setData(qt_time, qt_alt);
+
+    foreach(QCustomPlot *plot, values){
+        plot->rescaleAxes();
+        plot->replot();
+        plot->update();
+    }
 }
 
 void MainWindow::writeData(const QByteArray &data) {
     m_serial->write(data);
 }
-
-void MainWindow::realtimeDataSlot(){
-    QElapsedTimer elapsedTime;
-    double key = elapsedTime.elapsed()/1000.0;
-    static double lastPointKey = 0;
-    if (key-lastPointKey > 0.002) // at most add point every 2 ms
-    {
-      // add data to lines:
-      ui->layout_graph->graph(0)->addData(key, qSin(key)/(double)RAND_MAX*1*qSin(key/0.3843));
-      // rescale value (vertical) axis to fit the current data:
-      //ui->layout_graph->graph(0)->rescaleValueAxis();
-      //ui->customPlot->graph(1)->rescaleValueAxis(true);
-      lastPointKey = key;
-    }
-    // make key axis range scroll with the data (at a constant range size of 8):
-    ui->layout_graph->xAxis->setRange(key, 8, Qt::AlignRight);
-    ui->layout_graph->replot();
-    ui->layout_graph->update();
-}
-

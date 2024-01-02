@@ -1,0 +1,24 @@
+1. in starrtracker.pro add printsupport
+2. In .ui promote graph widget to QCustomPlot with header file as src/graph/qcustomplot.h
+3. Make sure to add the qcustomplot src and header files to the project
+4. Changed ui layout
+5. gpsparser to return values instead of string to become easier for other components to read data
+6. Also edited it to add altitude as well.
+7. Defined vectors in header file
+8. Updated handleDataReady
+
+Issue currently present:
+	1. In gpsParser.cpp change result to add featherweight data.
+	 	Where is featherweight data documentation.
+	 	
+
+Issue to look at:
+	1. Check for overflows and data leaks
+	2. If the app runs for long does it crash due to repeated plotting of data.
+	3. To check if the result data in GPSParser is used anywhere else other than in handleDataReady()
+	4. Is the use of double vectors correct
+
+Possible Fix:
+	1. Add time intervals in graphing components
+	2. upload all data to a text file and clear all cache
+	3. 
