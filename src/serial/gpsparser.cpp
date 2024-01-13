@@ -24,8 +24,15 @@ QStringList GPSParser::parse(QByteArray &data)
         QStringList strs = dataString.split(',');
         if (strs[0] == "$GPGGA" || strs[0] == "$GNGGA")
         {
-            result.append(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatillites Used: %7\n\n").arg(strs[1],strs[2],strs[3],strs[4],strs[5],strs[6],strs[7]));
+//            result.append(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatillites Used: %7\n\n").arg(strs[1],strs[2],strs[3],strs[4],strs[5],strs[6],strs[7]));
+            for (int i = 1; i < 6; i++){
+                result.append(strs[i]);
+            }
+            result[1] = static_cast<double>(result[1].toFloat()/100);       // To check if it divides by 100
+            result[3] = static_cast<double>(result[3].toFloat()/100);
 //            QTextStream(stdout) << result[1];
+            result.append(strs[9]);     // Altitude
+            result.append("m");         // Altitude unit
         }
     }
     else if (sizeof(data)>=8 && data[0] == '@')
@@ -35,7 +42,27 @@ QStringList GPSParser::parse(QByteArray &data)
         QStringList strs = dataString.split(' ');
         if (strs[1] == "GPS_STAT")
         {
-            result.append(tr("Time: %1\nLatitude: %2\nLongitude: %3\nSatillites Used: %4\n\n").arg(strs[6],strs[14],strs[16],strs[24]));
+            // Check latitude and longitude.
+//            result.append(tr("Time: %1\nLattitude: %2\nLongitude: %3\nSatillites Used: %4\n\n").arg(strs[6],strs[14],strs[16],strs[24]));
+            result.append(strs[6]);     // Time
+            if (strs[14] > 0){          // Latitude
+                result.append(strs[14]);
+                result.append("N");
+            } else {
+                result.append("-" + strs[14]);
+                result.append("S");
+            }
+
+            if (strs[16] > 0){          // Longitude
+                result.append(strs[16]);
+                result.append("E");
+            } else {
+                result.append("-" + strs[16]);
+                result.append("W");
+            }
+
+            result.append(strs[12]);    // Altitude
+            result.append("feet");
 //            QTextStream(stdout) << result[1];
         }
     }

@@ -36,9 +36,9 @@ MainWindow::MainWindow(QWidget *parent)
         plot->xAxis->setRange(0, 1800);   // Range of x
         plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
 
-        // Test to check if graph works
+//         Test to check if graph works
 //        qt_time = {1, 2, 3, 4, 5, 6, 7};
-//        qt_x = {4000, 5000, 300, 7000, 2000, 8000, 9000};
+//        qt_x = {4, 5, 3, 7, 2, 8, 9};
 //        plot->graph(0)->setData(qt_time, qt_x);
 //        plot->rescaleAxes();
 //        plot->replot();
@@ -122,7 +122,7 @@ void MainWindow::handleDataReady(const QStringList &data)
         else qt_alt.append(0.3048*data[9].toDouble());          // Convert feet to m
 
     ui->gpsType->setText(data[0]);
-    ui->textBrowser->setText(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatillites Used: %7\n Altitude: %8 %9\n").arg(data[1],data[2],data[3],data[4],data[5],data[6],data[7], data[9], data[10]));
+    ui->textBrowser->setText(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nAltitude: %6 %7\n").arg(data[1],data[2],data[3],data[4],data[5],data[6],data[7]));
 
     ui->graph_x->graph(0)->setData(qt_time, qt_x);
     ui->graph_y->graph(0)->setData(qt_time, qt_y);
