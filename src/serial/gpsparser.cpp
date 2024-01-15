@@ -25,14 +25,16 @@ QStringList GPSParser::parse(QByteArray &data)
         if (strs[0] == "$GPGGA" || strs[0] == "$GNGGA")
         {
 //            result.append(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatillites Used: %7\n\n").arg(strs[1],strs[2],strs[3],strs[4],strs[5],strs[6],strs[7]));
-            for (int i = 1; i < 6; i++){
+            for (int i = 1; i <= 7; i++){
                 result.append(strs[i]);
             }
-            result[1] = static_cast<double>(result[1].toFloat()/100);       // To check if it divides by 100
-            result[3] = static_cast<double>(result[3].toFloat()/100);
-//            QTextStream(stdout) << result[1];
+//            result[1] = static_cast<double>(result[1].toFloat()/100);       // To check if it divides by 100
+//            result[3] = static_cast<double>(result[3].toFloat()/100);
+            result[1] = result[1].toFloat() / 100;
+            result[3] = result[3].toFloat() / 100;
             result.append(strs[9]);     // Altitude
             result.append("m");         // Altitude unit
+            QTextStream(stdout) << result[1] << Qt::endl;
         }
     }
     else if (sizeof(data)>=8 && data[0] == '@')
@@ -63,7 +65,7 @@ QStringList GPSParser::parse(QByteArray &data)
 
             result.append(strs[12]);    // Altitude
             result.append("feet");
-//            QTextStream(stdout) << result[1];
+            QTextStream(stdout) << result[1] << Qt::endl;
         }
     }
     else
