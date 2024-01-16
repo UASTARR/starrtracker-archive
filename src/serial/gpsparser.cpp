@@ -24,8 +24,11 @@ QStringList GPSParser::parse(QByteArray &data)
         QStringList strs = dataString.split(',');
         if (strs[0] == "$GPGGA" || strs[0] == "$GNGGA")
         {
-            result.append(tr("Time: %1\nLattitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatillites Used: %7\n\n").arg(strs[1],strs[2],strs[3],strs[4],strs[5],strs[6],strs[7]));
-//            QTextStream(stdout) << result[1];
+             QString parsedData = tr("Time: %1\nLattitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatellites Used: %7\n\n")
+                .arg(strs[1], strs[2], strs[3], strs[4], strs[5], strs[6], strs[7]);
+
+            result.append(parsedData);
+            storeData(parsedData);
         }
     }
     else if (sizeof(data)>=8 && data[0] == '@')
@@ -35,8 +38,11 @@ QStringList GPSParser::parse(QByteArray &data)
         QStringList strs = dataString.split(' ');
         if (strs[1] == "GPS_STAT")
         {
-            result.append(tr("Time: %1\nLattitude: %2\nLongitude: %3\nSatillites Used: %4\n\n").arg(strs[6],strs[14],strs[16],strs[24]));
-//            QTextStream(stdout) << result[1];
+            QString parsedData = tr("Time: %1\nLattitude: %2\nLongitude: %3\nSatellites Used: %4\n\n")
+                .arg(strs[6], strs[14], strs[16], strs[24]);
+
+            result.append(parsedData);
+            storeData(parsedData);
         }
     }
     else
@@ -45,4 +51,20 @@ QStringList GPSParser::parse(QByteArray &data)
     }
 
     return result;
+}
+
+void GPSParser::storeData(const QString &data)
+{
+    // Appending parsed data to text file
+    QFile file("gps_data.txt");
+    if (file.open(QIODevice::Append | QIODevice::Text))
+    {
+        QTextStream stream(&file);
+        stream << data << endl;
+        file.close();
+    }
+    else
+    {
+        QTextStream(stdout) << tr("Error opening the file for writing\n");
+    }
 }
