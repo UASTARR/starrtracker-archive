@@ -35,6 +35,7 @@ HEADERS += \
     src/graph/qcustomplot.h \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \
+    src/serial/validgpsformats.h \
     ui/mainwindow.h
 
 FORMS += \

@@ -2,7 +2,7 @@
 #define GPSPARSER_H
 
 #include <QByteArray>
-#include <QObject>
+#include "validgpsformats.h"
 
 class GPSParser : public QObject
 {
