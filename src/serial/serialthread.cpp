@@ -84,6 +84,7 @@ void SerialThread::run()
     if (!serial.open(QIODevice::ReadWrite))
     {
         emit error(tr("Failed to open port %1, error: %2").arg(port).arg(serial.error()));
+
         return;
     }
     else

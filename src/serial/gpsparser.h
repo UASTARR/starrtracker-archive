@@ -12,19 +12,26 @@ public:
     explicit GPSParser(QObject *parent = nullptr);
     ~GPSParser();
 
-    QStringList parse(QByteArray& data);
-    double getLongitude();
-    double getLatitude();
     struct GpsData {
-        float time;
-        float latitude;
-        float longitude;
+        QString gps_type;
+        float time_s;
+        float time_m;
+        float time_h;
+        float latitude; // + 'for N, - for S
+        float longitude; // + for E, - for W
         float altitude;
     };
+
+    GpsData parse(QByteArray& data);
+
+    double getLongitude();
+    double getLatitude();
 
 private:
     double longitude_;
     double latitude_;
+
+    const QStringList GPS_TYPES_ACCEPTED = {"Featherweight", "TeleGPS"};
 
 };
 

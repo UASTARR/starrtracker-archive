@@ -12,11 +12,10 @@ GPSParser::~GPSParser()
 
 }
 
-QStringList GPSParser::parse(QByteArray &data)
+GPSParser::GpsData GPSParser::parse(QByteArray &data)
 {
-    QString text;
-    QString gpsType;
-    QStringList result; // [0] = GPS type, [1] = gps data
+    GpsData result;
+
     if (sizeof(data)>=8 && data[0] == '$')
     {
         result.append("TeleGPS");
