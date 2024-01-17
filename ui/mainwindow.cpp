@@ -38,16 +38,16 @@ MainWindow::MainWindow(QWidget *parent)
 
 //         Test to check if graph works
 //        qt_time = {1, 2, 3, 4, 5, 6, 7};
-//        qt_x = {4, 5, 3, 7, 2, 8, 9};
+//        qt_x = {400, 50, 3000, 700, 20, 800, 900};
 //        plot->graph(0)->setData(qt_time, qt_x);
 //        plot->rescaleAxes();
 //        plot->replot();
 //        plot->update();
     }
 
-    ui->graph_x->yAxis->setRange(-9000, 9000);
-    ui->graph_y->yAxis->setRange(-18000, 18000);
-    ui->graph_alt->yAxis->setRange(0, 1800);
+//    ui->graph_x->yAxis->setRange(-9000, 9000);
+//    ui->graph_y->yAxis->setRange(-18000, 18000);
+//    ui->graph_alt->yAxis->setRange(0, 1800);
 }
 
 MainWindow::~MainWindow()
@@ -127,7 +127,7 @@ void MainWindow::handleDataReady(const QStringList &data)
     ui->graph_x->graph(0)->setData(qt_time, qt_x);
     ui->graph_y->graph(0)->setData(qt_time, qt_y);
     ui->graph_alt->graph(0)->setData(qt_time, qt_alt);
-
+    qDebug() << values << Qt::endl;
     foreach(QCustomPlot *plot, values){
         plot->rescaleAxes();
         plot->replot();
