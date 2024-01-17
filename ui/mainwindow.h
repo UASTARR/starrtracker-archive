@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSerialPort>
 #include "../src/serial/serialthread.h"
+#include "../src/serial/gpsparser.h"
 #include "src/graph/qcustomplot.h"
 
 QT_BEGIN_NAMESPACE

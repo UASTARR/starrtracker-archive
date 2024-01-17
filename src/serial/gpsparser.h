@@ -15,6 +15,12 @@ public:
     QStringList parse(QByteArray& data);
     double getLongitude();
     double getLatitude();
+    struct GpsData {
+        float time;
+        float latitude;
+        float longitude;
+        float altitude;
+    };
 
 private:
     double longitude_;
