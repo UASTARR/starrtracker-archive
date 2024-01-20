@@ -17,7 +17,7 @@ public:
     void stopSerialThread();
 
 signals:
-    void dataReady(const QStringList &data);
+    void dataReady(const GpsData &data);
     void error(const QString &s);
 
 private:

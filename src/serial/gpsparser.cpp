@@ -30,6 +30,7 @@ GpsData GPSParser::parse(QByteArray &data)
         }
         default:
             qDebug() << "Unkown Data type" << Qt::endl;
+            qDebug() << data << Qt::endl;
     }
 
     QString tempStr = QString::fromLocal8Bit(data);
@@ -41,6 +42,7 @@ GpsData GPSParser::parse(QByteArray &data)
         result.longitude = dataStrList[parserFormat.long_i].toFloat();
         result.altitude = dataStrList[parserFormat.alt_i].toFloat();
         result.time = parserFormat.time_format(dataStrList[parserFormat.time_i]);
+        result.valid = true;
     }
     else
     {
