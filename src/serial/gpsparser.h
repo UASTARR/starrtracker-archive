@@ -3,6 +3,7 @@
 
 #include <QByteArray>
 #include <QObject>
+#include <QFile>
 
 class GPSParser : public QObject
 {
@@ -11,7 +12,7 @@ class GPSParser : public QObject
 public:
     explicit GPSParser(QObject *parent = nullptr);
     ~GPSParser();
-
+    void storeData(const QString &data);
     QStringList parse(QByteArray& data);
     double getLongitude();
     double getLatitude();
