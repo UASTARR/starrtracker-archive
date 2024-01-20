@@ -16,7 +16,7 @@ SerialThread::~SerialThread()
     wait();
 }
 
-void SerialThread::startSerialThread(const QString &port, const qint32 &baud)
+void SerialThread::startSerialDataThread(const QString &port, const qint32 &baud)
 {
     const QMutexLocker locker(&m_mutex);
     m_port = port;

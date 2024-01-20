@@ -13,7 +13,8 @@ public:
     SerialThread(QObject *parent = nullptr);
     ~SerialThread();
 
-    void startSerialThread(const QString &port, const qint32 &baud);
+    void startLocalDataThread(const QString &file);
+    void startSerialDataThread(const QString &port, const qint32 &baud);
     void stopSerialThread();
 
 signals:
