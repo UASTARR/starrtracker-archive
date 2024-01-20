@@ -45,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
 //        plot->update();
     }
 
-//    ui->graph_x->yAxis->setRange(-9000, 9000);
-//    ui->graph_y->yAxis->setRange(-18000, 18000);
-//    ui->graph_alt->yAxis->setRange(0, 1800);
+    ui->graph_x->yAxis->setRange(-9000, 9000);
+    ui->graph_y->yAxis->setRange(-18000, 18000);
+    ui->graph_alt->yAxis->setRange(0, 1800);
 }
 
 MainWindow::~MainWindow()
@@ -113,16 +113,25 @@ void MainWindow::handleDataReady(const GpsData &data)
     // change below based on featherweight gps data.
 
     // Storing all data to vectors
-    qt_time.append(data[1].toDouble());
-    if (data[3] == "N") qt_x.append(data[2].toDouble());        // + for N
-        else qt_x.append(-data[2].toDouble());                  // - for S
-    if (data[5] == "E") qt_y.append(data[4].toDouble());        // + for E
-        else qt_y.append(-data[4].toDouble());                  // - for W
-    if (data[10] == "m" or data[10] == "M") qt_alt.append(data[9].toDouble());     // altitude in m
-        else qt_alt.append(0.3048*data[9].toDouble());          // Convert feet to m
+//    qt_time.append(data[1].toDouble());
+//    if (data[3] == "N") qt_x.append(data[2].toDouble());        // + for N
+//        else qt_x.append(-data[2].toDouble());                  // - for S
+//    if (data[5] == "E") qt_y.append(data[4].toDouble());        // + for E
+//        else qt_y.append(-data[4].toDouble());                  // - for W
+//    if (data[10] == "m" or data[10] == "M") qt_alt.append(data[9].toDouble());     // altitude in m
+//        else qt_alt.append(0.3048*data[9].toDouble());          // Convert feet to m
 
-    ui->gpsType->setText(data[0]);
-    ui->textBrowser->setText(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nAltitude: %6 %7\n").arg(data[1],data[2],data[3],data[4],data[5],data[6],data[7]));
+//    ui->gpsType->setText(data[0]);
+//    ui->textBrowser->setText(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nAltitude: %6 %7\n").arg(data[1],data[2],data[3],data[4],data[5],data[6],data[7]));
+
+    // Testing
+    qt_time.append(QTime(0,0,0).secsTo(data.time));
+    qt_x.append(data.latitude);
+    qt_y.append(data.longitude);
+    qt_alt.append(data.altitude);
+
+    ui->gpsType->setText(data.gps_name);
+    ui->textBrowser->setText(tr("Time: %1\nLatitude: %2\nLongitude: %3\nAltitude: %4\n").arg(data.time.toString("HH:mm:ss"), QString::number(data.latitude), QString::number(data.longitude), QString::number(data.altitude)));
 
     ui->graph_x->graph(0)->setData(qt_time, qt_x);
     ui->graph_y->graph(0)->setData(qt_time, qt_y);
