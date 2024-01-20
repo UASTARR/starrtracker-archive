@@ -12,15 +12,15 @@ public:
     explicit GPSParser(QObject *parent = nullptr);
     ~GPSParser();
 
-    struct GpsData {
-        QString gps_type;
-        float time_s;
-        float time_m;
-        float time_h;
-        float latitude; // + 'for N, - for S
-        float longitude; // + for E, - for W
-        float altitude;
-    };
+//    struct GpsData {
+//        QString gps_type;
+//        float time_s;
+//        float time_m;
+//        float time_h;
+//        float latitude; // + 'for N, - for S
+//        float longitude; // + for E, - for W
+//        float altitude;
+//    };
 
     GpsData parse(QByteArray& data);
 

@@ -12,72 +12,39 @@ GPSParser::~GPSParser()
 
 }
 
-GPSParser::GpsData GPSParser::parse(QByteArray &data)
+GpsData GPSParser::parse(QByteArray &data)
 {
     GpsData result;
-
-    if (sizeof(data)>=8 && data[0] == '$')
-    {
-        result.append("TeleGPS");
-        QString dataString = QString::fromLocal8Bit(data);
-        QStringList strs = dataString.split(',');
-
-        qDebug() << strs << Qt::endl;
-
-        if (strs[0] == "$GPGGA" || strs[0] == "$GNGGA")
+    TeleGPS temp = TeleGPS();
+    GpsFormat& parserFormat = temp; // TODO: Figure out a way to do this without the temp
+     switch(data[0]) {
+        case '$': // Indicated TeleGPS data
         {
-//            result.append(tr("Time: %1\nLatitude: %2 %3\nLongitude: %4 %5\nFix Quality: %6\nSatillites Used: %7\n\n").arg(strs[1],strs[2],strs[3],strs[4],strs[5],strs[6],strs[7]));
-            for (int i = 1; i <= 7; i++){
-                result.append(strs[i]);
-            }
-//            result[1] = static_cast<double>(result[1].toFloat()/100);       // To check if it divides by 100
-//            result[3] = static_cast<double>(result[3].toFloat()/100);
-            result[1] = result[1].toFloat() / 100;
-            result[3] = result[3].toFloat() / 100;
-            result.append(strs[9]);     // Altitude
-            result.append("m");         // Altitude unit
-
-            qDebug() << result[1] << " " << result[2] << " " << result[4] << " " << result[9] << Qt::endl;
-
+            parserFormat = TeleGPS();
+            break;
         }
+        case '@': // Indicates Featherweight data
+        {
+            parserFormat = Featherweight();
+            break;
+        }
+        default:
+            qDebug() << "Unkown Data type" << Qt::endl;
     }
-    else if (sizeof(data)>=8 && data[0] == '@')
+
+    QString tempStr = QString::fromLocal8Bit(data);
+    QStringList dataStrList = tempStr.split(parserFormat.seperator);
+    if (sizeof(data)>=8 && dataStrList[parserFormat.packet_type_i] == parserFormat.packet)
     {
-        result.append("Featherweight");
-        QString dataString = QString::fromLocal8Bit(data);
-        QStringList strs = dataString.split(' ');
-
-        qDebug() << strs << Qt::endl;
-
-        if (strs[1] == "GPS_STAT")
-        {
-            result.append(strs[6]);     // Time
-            if (strs[14] > 0){          // Latitude
-                result.append(strs[14]);
-                result.append("N");
-            } else {
-                result.append("-" + strs[14]);
-                result.append("S");
-            }
-
-            if (strs[16] > 0){          // Longitude
-                result.append(strs[16]);
-                result.append("E");
-            } else {
-                result.append("-" + strs[16]);
-                result.append("W");
-            }
-
-            result.append(strs[12]);    // Altitude
-            result.append("feet");
-
-            qDebug() << result[1] << " " << result[2] << " " << result[4] << " " << result[9] << Qt::endl;
-        }
+        result.gps_name = parserFormat.name;
+        result.latitude = dataStrList[parserFormat.lat_i].toFloat();
+        result.longitude = dataStrList[parserFormat.long_i].toFloat();
+        result.altitude = dataStrList[parserFormat.alt_i].toFloat();
+        result.time = parserFormat.time_format(dataStrList[parserFormat.time_i]);
     }
     else
     {
-        QTextStream(stdout) <<  tr("Can't parse data\n");
+        qDebug() << "Undesired Data" << Qt::endl;
     }
-
     return result;
 }

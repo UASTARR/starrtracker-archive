@@ -107,7 +107,7 @@ void MainWindow::handleError(QSerialPort::SerialPortError error) {
     }
 }
 
-void MainWindow::handleDataReady(const QStringList &data)
+void MainWindow::handleDataReady(const GpsData &data)
 {
     // Possible optimization, check if length of vector exceeded certain limit and clear it after that
     // change below based on featherweight gps data.

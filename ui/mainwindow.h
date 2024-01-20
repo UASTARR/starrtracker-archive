@@ -21,7 +21,7 @@ private slots:
 
     void handleError(QSerialPort::SerialPortError error);
     void handleThreadError(const QString &s);
-    void handleDataReady(const QStringList &data);
+    void handleDataReady(const GpsData &data);
 
 public:
     MainWindow(QWidget *parent = nullptr);
