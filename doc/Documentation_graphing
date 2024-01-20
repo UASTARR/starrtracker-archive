@@ -1,3 +1,5 @@
+Install library QTcharts
+
 1. in starrtracker.pro add printsupport
 2. In .ui promote graph widget to QCustomPlot with header file as src/graph/qcustomplot.h
 3. Make sure to add the qcustomplot src and header files to the project

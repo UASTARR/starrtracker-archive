@@ -23,6 +23,8 @@ private slots:
     void handleThreadError(const QString &s);
     void handleDataReady(const GpsData &data);
 
+    void openLocalSerialPort();
+    void closeLocalSerialPort();
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
