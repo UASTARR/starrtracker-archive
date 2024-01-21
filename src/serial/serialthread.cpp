@@ -2,6 +2,7 @@
 
 #include <QSerialPort>
 #include <QDebug>
+#include <QFile>
 
 SerialThread::SerialThread(QObject *parent)
     : QThread(parent)
@@ -14,6 +15,16 @@ SerialThread::~SerialThread()
 {
     setStopFlag(true);
     wait();
+}
+
+void SerialThread::startLocalDataThread(const QString &file)
+{
+    const QMutexLocker locker(&m_mutex);
+    m_file = file;
+    if (!isRunning())
+    {
+        start();
+    }
 }
 
 void SerialThread::startSerialDataThread(const QString &port, const qint32 &baud)
@@ -66,46 +77,77 @@ qint32 SerialThread::getBaud()
     return temp;
 }
 
+QString SerialThread::getFile()
+{
+   QString temp;
+   m_mutex.lock();
+   temp = m_file;
+   m_mutex.unlock();
+   return temp;
+}
+
 void SerialThread::run()
 {
-    QSerialPort serial;
-    QString port;
-    qint32 baudRate;
-
-    port = getPort();
-    baudRate = getBaud();
-    serial.setPortName(port);
-    serial.setBaudRate(baudRate);
-    serial.setDataBits(QSerialPort::Data8);
-    serial.setParity(QSerialPort::NoParity);
-    serial.setStopBits(QSerialPort::OneStop);
-    serial.setFlowControl(QSerialPort::NoFlowControl);
-
-    if (!serial.open(QIODevice::ReadWrite))
+    if (m_serial_mode)
     {
-        emit error(tr("Failed to open port %1, error: %2").arg(port).arg(serial.error()));
+        QSerialPort serial;
+        QString port;
+        qint32 baudRate;
 
-        return;
+        port = getPort();
+        baudRate = getBaud();
+        serial.setPortName(port);
+        serial.setBaudRate(baudRate);
+        serial.setDataBits(QSerialPort::Data8);
+        serial.setParity(QSerialPort::NoParity);
+        serial.setStopBits(QSerialPort::OneStop);
+        serial.setFlowControl(QSerialPort::NoFlowControl);
+
+        if (!serial.open(QIODevice::ReadWrite))
+        {
+            emit error(tr("Failed to open port %1, error: %2").arg(port).arg(serial.error()));
+
+            return;
+        }
+        else
+        {
+            QString data;
+            GpsData result;
+            while (serial.waitForReadyRead(-1))
+            {
+                while (serial.canReadLine())
+                {
+                    data = QString::fromLocal8Bit(serial.readLine());
+                    result = m_gpsTracker.parse(data);
+                    if (result.valid)
+                        emit dataReady(result);
+                }
+                if (getStopFlag())
+                {
+                    break;
+                }
+            }
+        }
+
+        serial.close();
     }
     else
     {
-        QByteArray data;
         GpsData result;
-        while (serial.waitForReadyRead(-1))
-        {
-            while (serial.canReadLine())
-            {
-                data = serial.readLine();
-                result = m_gpsTracker.parse(data);
-                if (result.valid)
-                    emit dataReady(result);
-            }
-            if (getStopFlag())
-            {
-                break;
-            }
+        QFile file(getFile());
+        if(!file.open(QIODevice::ReadOnly)) {
+            emit error(tr("Failed to open file, error: %2").arg(file.errorString()));
         }
-    }
 
-    serial.close();
+        QTextStream in(&file);
+
+        while(!in.atEnd()) {
+            QString data = in.readLine();
+            result = m_gpsTracker.parse(data);
+            if (result.valid)
+                emit dataReady(result);
+        }
+
+        file.close();
+    }
 }

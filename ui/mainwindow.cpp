@@ -77,7 +77,7 @@ void MainWindow::openSerialPort()
     ui->serialConnectionButton->setEnabled(false);
     ui->serialTerminationButton->setEnabled(true);
 
-    m_thread.startSerialThread(ui->portSelect->currentText(), (ui->baudSelect->currentText()).toInt(nullptr, 10));
+    m_thread.startSerialDataThread(ui->portSelect->currentText(), (ui->baudSelect->currentText()).toInt(nullptr, 10));
 }
 
 void MainWindow::closeSerialPort() {

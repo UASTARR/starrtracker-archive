@@ -25,6 +25,7 @@ private:
     void run() override;
 
     QMutex m_mutex;
+    bool m_serial_mode;
     bool m_stop;
     void setStopFlag(bool newState);
     bool getStopFlag();
@@ -32,6 +33,8 @@ private:
     QString getPort();
     qint32 m_baud;
     qint32 getBaud();
+    QString m_file;
+    QString getFile();
     GPSParser m_gpsTracker;
 };
 

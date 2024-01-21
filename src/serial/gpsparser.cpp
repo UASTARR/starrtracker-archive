@@ -12,13 +12,14 @@ GPSParser::~GPSParser()
 
 }
 
-GpsData GPSParser::parse(QByteArray &data)
+GpsData GPSParser::parse(QString &data)
 {
     GpsData result;
     TeleGPS temp = TeleGPS();
     GpsFormat& parserFormat = temp; // TODO: Figure out a way to do this without the temp
-     switch(data[0]) {
-        case '$': // Indicated TeleGPS data
+    switch((int)data.at(0).toLatin1())
+    {
+        case '$': // Indicated TeleGPS dat
         {
             parserFormat = TeleGPS();
             break;
@@ -33,8 +34,8 @@ GpsData GPSParser::parse(QByteArray &data)
             qDebug() << data << Qt::endl;
     }
 
-    QString tempStr = QString::fromLocal8Bit(data);
-    QStringList dataStrList = tempStr.split(parserFormat.seperator);
+//    QString tempStr = QString::fromLocal8Bit(data);
+    QStringList dataStrList = data.split(parserFormat.seperator);
     if (sizeof(data)>=8 && dataStrList[parserFormat.packet_type_i] == parserFormat.packet)
     {
         result.gps_name = parserFormat.name;

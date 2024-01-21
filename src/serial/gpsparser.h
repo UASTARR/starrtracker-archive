@@ -22,7 +22,7 @@ public:
 //        float altitude;
 //    };
 
-    GpsData parse(QByteArray& data);
+    GpsData parse(QString &data);
 
     double getLongitude();
     double getLatitude();
