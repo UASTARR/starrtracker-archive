@@ -19,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
     connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
     connect(&m_thread, &SerialThread::dataReady, this, &MainWindow::handleDataReady);
+
+    // Connection for graph-fix
+    connect(ui->serialLocalConnectionButton, &QPushButton::clicked, this, &MainWindow::openLocalSerialPort);
+    connect(ui->serialLocalTerminationButton, &QPushButton::clicked, this, &MainWindow::closeLocalSerialPort);
+
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
 
     for (const QSerialPortInfo &serialPortInfo : serialPortInfos) {
@@ -69,6 +74,33 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::openLocalSerialPort(){
+    QString path = ui->pathBrowser->toPlainText();
+    ui->portSelect->setEnabled(false);
+    ui->baudSelect->setEnabled(false);
+    ui->serialConnectionButton->setEnabled(false);
+    ui->serialTerminationButton->setEnabled(true);
+    if (path != ""){
+        m_thread.startLocalDataThread(path);
+    }
+}
+
+void MainWindow::closeLocalSerialPort(){
+    if (m_serial->isOpen())
+        m_serial->close();
+
+    m_thread.stopSerialThread();
+    if (m_thread.wait(time))
+    {
+        QMessageBox::information(this,tr("Disconnected"),tr("Wow! The Local serial port closed!"));
+        ui->serialTerminationButton->setEnabled(false);
+        ui->serialConnectionButton->setEnabled(true);
+        ui->portSelect->setEnabled(true);
+        ui->baudSelect->setEnabled(true);
+    }
+    else
+        QMessageBox::critical(this, tr("Critical Error"), tr("Failed to close Local thread"));
+}
 
 void MainWindow::openSerialPort()
 {
@@ -90,6 +122,9 @@ void MainWindow::closeSerialPort() {
     {
         QMessageBox::information(this,tr("Disconnected"),tr("Wow! The serial port closed!"));
         ui->serialTerminationButton->setEnabled(false);
+        ui->serialConnectionButton->setEnabled(true);
+        ui->portSelect->setEnabled(true);
+        ui->baudSelect->setEnabled(true);
     }
     else
         QMessageBox::critical(this, tr("Critical Error"), tr("Failed to close thread"));
