@@ -113,6 +113,7 @@ void SerialThread::run()
         {
             QString data;
             GpsData result;
+            serial.clear();
             while (serial.waitForReadyRead(-1))
             {
                 while (serial.canReadLine())
@@ -120,7 +121,14 @@ void SerialThread::run()
                     data = QString::fromLocal8Bit(serial.readLine());
                     result = m_gpsTracker.parse(data);
                     if (result.valid)
+                    {
                         emit dataReady(result);
+                        qDebug() << "Sending data...\n" << result.gps_name << Qt::endl;
+                    }
+                    else
+                    {
+                        qDebug() << "Invalid data blocked" << Qt::endl;
+                    }
                 }
                 if (getStopFlag())
                 {
@@ -136,7 +144,7 @@ void SerialThread::run()
         GpsData result;
         QFile file(getFile());
         if(!file.open(QIODevice::ReadOnly)) {
-            emit error(tr("Failed to open file, error: %2").arg(file.errorString()));
+            emit error(tr("Failed to open file, error: %1").arg(file.errorString()));
         }
 
         QTextStream in(&file);
@@ -145,7 +153,14 @@ void SerialThread::run()
             QString data = in.readLine();
             result = m_gpsTracker.parse(data);
             if (result.valid)
+            {
                 emit dataReady(result);
+                qDebug() << "Sending data...\n" << result.gps_name << Qt::endl;
+            }
+            else
+            {
+                qDebug() << "Invalid data blocked" << Qt::endl;
+            }
         }
 
         file.close();

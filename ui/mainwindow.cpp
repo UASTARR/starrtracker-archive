@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <iostream>
 #include <QDebug>
+Q_DECLARE_METATYPE(GpsData)
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->portSelect->clear();
 
+    qRegisterMetaType<GpsData>();
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
     connect(ui->serialTerminationButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
     connect(&m_thread, &SerialThread::error, this, &MainWindow::handleThreadError);
