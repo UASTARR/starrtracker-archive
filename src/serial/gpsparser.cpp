@@ -69,31 +69,4 @@ void GPSParser::storeData(const QString &data)
         QTextStream(stdout) << tr("Error opening the file for writing\n");
     }
 }
-int main(int argc, char *argv[])
-{
-    QCoreApplication a(argc, argv);
-
-    // Sample data to test the GPSParser
-    QByteArray testData = "$GPGGA,123456,1234.5678,N,5678.1234,W,1,10,1.5,100,M,34,M,2.0,0010*4D";
-
-    // Instantiate GPSParser
-    GPSParser gpsParser;
-
-    // Parse the test data
-    QStringList parsedResult = gpsParser.parse(testData);
-
-    // Check if parsing was successful
-    if (parsedResult.size() > 1)
-    {
-        // Use iterators to avoid detached container
-        QStringListIterator it(parsedResult);
-        while (it.hasNext()) {
-            QTextStream(stdout) << it.next() << endl;
-        }
-
-
-    }
-
-    return a.exec();
-}
 
