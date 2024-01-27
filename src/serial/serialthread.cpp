@@ -151,16 +151,19 @@ void SerialThread::run()
 
         while(!in.atEnd()) {
             QString data = in.readLine();
-            result = m_gpsTracker.parse(data);
-            if (result.valid)
-            {
-                emit dataReady(result);
-                qDebug() << "Sending data...\n" << result.gps_name << Qt::endl;
+            if (data != ""){
+                result = m_gpsTracker.parse(data);
+                if (result.valid)
+                {
+                    emit dataReady(result);
+                    qDebug() << "Sending data...\n" << result.gps_name << Qt::endl;
+                }
+                else
+                {
+                    qDebug() << "Invalid data blocked" << Qt::endl;
+                }
             }
-            else
-            {
-                qDebug() << "Invalid data blocked" << Qt::endl;
-            }
+
         }
 
         file.close();
