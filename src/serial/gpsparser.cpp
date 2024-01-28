@@ -1,7 +1,6 @@
 #include "gpsparser.h"
 #include <iostream>
 #include <QTextStream>
-#include <QCoreApplication>
 
 GPSParser::GPSParser(QObject *parent) : QObject(parent)
 {
@@ -69,4 +68,3 @@ void GPSParser::storeData(const QString &data)
         QTextStream(stdout) << tr("Error opening the file for writing\n");
     }
 }
-
