@@ -1,5 +1,6 @@
 QT       += core gui
 QT       += serialport
+QT       += quickwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -33,7 +34,13 @@ HEADERS += \
 #    src/map/position.h \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \
-    ui/mainwindow.h
+    ui/mainwindow.h \
+    mainwindow.cpp \
+    streetmapview.cc
+
+HEADERS += \
+    mainwindow.h \
+    streetmapview.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -45,5 +52,5 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    ui/mapview.qml
+RESOURCES += \
+    resources.qrc
