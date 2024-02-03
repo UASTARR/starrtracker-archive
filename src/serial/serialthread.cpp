@@ -21,17 +21,21 @@ void SerialThread::startLocalDataThread(const QString &file)
 {
     const QMutexLocker locker(&m_mutex);
     m_file = file;
+    m_save_data = false;
+    m_serial_mode = false;
     if (!isRunning())
     {
         start();
     }
 }
 
-void SerialThread::startSerialDataThread(const QString &port, const qint32 &baud)
+void SerialThread::startSerialDataThread(const QString &port, const qint32 &baud, const bool &saveData)
 {
     const QMutexLocker locker(&m_mutex);
     m_port = port;
     m_baud  = baud;
+    m_save_data = saveData;
+    m_serial_mode = true;
     if (!isRunning())
     {
         start();
@@ -119,7 +123,7 @@ void SerialThread::run()
                 while (serial.canReadLine())
                 {
                     data = QString::fromLocal8Bit(serial.readLine());
-                    result = m_gpsTracker.parse(data);
+                    result = m_gpsTracker.parse(data, m_save_data);
                     if (result.valid)
                     {
                         emit dataReady(result);
@@ -152,7 +156,7 @@ void SerialThread::run()
         while(!in.atEnd()) {
             QString data = in.readLine();
             if (data != ""){
-                result = m_gpsTracker.parse(data);
+                result = m_gpsTracker.parse(data, m_save_data);
                 if (result.valid)
                 {
                     emit dataReady(result);

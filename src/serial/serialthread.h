@@ -14,7 +14,7 @@ public:
     ~SerialThread();
 
     void startLocalDataThread(const QString &file);
-    void startSerialDataThread(const QString &port, const qint32 &baud);
+    void startSerialDataThread(const QString &port, const qint32 &baud, const bool &saveData);
     void stopSerialThread();
 
 signals:
@@ -27,6 +27,7 @@ private:
     QMutex m_mutex;
     bool m_serial_mode;
     bool m_stop;
+    bool m_save_data;
     void setStopFlag(bool newState);
     bool getStopFlag();
     QString m_port;

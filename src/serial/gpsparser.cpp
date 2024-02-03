@@ -1,7 +1,5 @@
 #include "gpsparser.h"
-#include <iostream>
-#include <QTextStream>
-#include <QDebug>
+
 GPSParser::GPSParser(QObject *parent) : QObject(parent)
 {
 
@@ -12,7 +10,7 @@ GPSParser::~GPSParser()
 
 }
 
-GpsData GPSParser::parse(QString &data)
+GpsData GPSParser::parse(QString &data, bool &storeGPSData)
 {
     GpsData result;
     TeleGPS temp = TeleGPS();
@@ -34,7 +32,9 @@ GpsData GPSParser::parse(QString &data)
             qDebug() << data << Qt::endl;
             return result;
     }
-
+    if (storeGPSData) {
+        storeData(data);
+    }
     QStringList dataStrList = data.split(parserFormat->get_seperator());
     if (sizeof(data)>=8 && dataStrList[parserFormat->get_packet_type_i()] == parserFormat->get_packet())
     {
@@ -51,4 +51,20 @@ GpsData GPSParser::parse(QString &data)
     }
     delete parserFormat;
     return result;
+}
+
+void GPSParser::storeData(const QString &data)
+{
+    // Appending parsed data to text file
+    QFile file("gps_data.txt");
+    if (file.open(QIODevice::Append | QIODevice::Text))
+    {
+        QTextStream stream(&file);
+        stream << data << Qt::endl;
+        file.close();
+    }
+    else
+    {
+        QTextStream(stdout) << tr("Error opening the file for writing\n");
+    }
 }
