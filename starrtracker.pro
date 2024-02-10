@@ -25,6 +25,7 @@ SOURCES += \
 #    src/map/position.cpp \
     src/serial/gpsparser.cpp \
     src/serial/serialthread.cpp \
+    streetmapview.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
@@ -34,9 +35,9 @@ HEADERS += \
 #    src/map/position.h \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \
+    streetmapview.cc \
     ui/mainwindow.h \
-    mainwindow.cpp \
-    streetmapview.cc
+    mainwindow.cpp
 
 HEADERS += \
     mainwindow.h \
