@@ -25,6 +25,7 @@ private slots:
 
     void openLocalSerialPort();
     void closeLocalSerialPort();
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

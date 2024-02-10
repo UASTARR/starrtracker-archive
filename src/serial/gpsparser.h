@@ -1,8 +1,13 @@
 #ifndef GPSPARSER_H
 #define GPSPARSER_H
 
-#include <QByteArray>
 #include "validgpsformats.h"
+#include <QFile>
+#include <QByteArray>
+#include <iostream>
+#include <QTextStream>
+#include <QDebug>
+#include <QCoreApplication>
 
 class GPSParser : public QObject
 {
@@ -22,7 +27,8 @@ public:
 //        float altitude;
 //    };
 
-    GpsData parse(QString &data);
+    GpsData parse(QString &data, bool &storeGPSData);
+    void storeData(const QString &data);
 
     double getLongitude();
     double getLatitude();

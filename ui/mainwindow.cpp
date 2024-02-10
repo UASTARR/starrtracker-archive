@@ -108,10 +108,11 @@ void MainWindow::openSerialPort()
 {
     ui->portSelect->setEnabled(false);
     ui->baudSelect->setEnabled(false);
+    ui->saveButton->setEnabled(false);
     ui->serialConnectionButton->setEnabled(false);
     ui->serialTerminationButton->setEnabled(true);
 
-    m_thread.startSerialDataThread(ui->portSelect->currentText(), (ui->baudSelect->currentText()).toInt(nullptr, 10));
+    m_thread.startSerialDataThread(ui->portSelect->currentText(), (ui->baudSelect->currentText()).toInt(nullptr, 10), ui->saveButton->isChecked());
 }
 
 void MainWindow::closeSerialPort() {
@@ -127,6 +128,7 @@ void MainWindow::closeSerialPort() {
         ui->serialConnectionButton->setEnabled(true);
         ui->portSelect->setEnabled(true);
         ui->baudSelect->setEnabled(true);
+        ui->saveButton->setEnabled(true);
     }
     else
         QMessageBox::critical(this, tr("Critical Error"), tr("Failed to close thread"));
