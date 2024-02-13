@@ -1,6 +1,7 @@
 QT       += core gui
 QT       += serialport
 QT       += quickwidgets
+QT	 += qml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +26,7 @@ SOURCES += \
 #    src/map/position.cpp \
     src/serial/gpsparser.cpp \
     src/serial/serialthread.cpp \
-    streetmapview.cpp \
+    src/map/streetmapview.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
@@ -35,13 +36,13 @@ HEADERS += \
 #    src/map/position.h \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \
-    streetmapview.cc \
+    ui/streetmapview.cc \
     ui/mainwindow.h \
     mainwindow.cpp
 
 HEADERS += \
     mainwindow.h \
-    streetmapview.h
+    src/map/streetmapview.h
 
 FORMS += \
     ui/mainwindow.ui

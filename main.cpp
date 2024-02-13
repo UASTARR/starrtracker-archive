@@ -1,21 +1,19 @@
 #include "ui/mainwindow.h"
-#include "streetmapview.h"
+#include "src/map/streetmapview.h"
 
 #include <QApplication>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QSerialPortInfo>
 #include <QComboBox>
+#include <QQuickWidget>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
+    QGuiApplication a(argc, argv);
 
-    StreetMapView *map = new StreetMapView(&w);
-
-    map->show();
-    w.show();
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/streetmapview.qml")));
 
     return a.exec();
 }

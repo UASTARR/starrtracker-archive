@@ -3,11 +3,17 @@ import QtQuick.Window 2.2
 import QtLocation 5.8
 import QtPositioning 5.8
 
-Rectangle {
+Window {
+    id: win
+    objectName: "window"
+    visible: true
+    width: 512
+    height: 512
+
     Plugin {
         id: osm
         name: "osm"
-        // specify plugin parameters if necessary
+
         PluginParameter {
             name: "osm.useragent"
             value: "UAStarr"
@@ -15,7 +21,7 @@ Rectangle {
 
         PluginParameter {
             name: "osm.mapping.offline.directory"
-            value: ":/tiles/15/9124/"
+            value: "qrc:/tiles/15/9124/"
         }
 
         PluginParameter {

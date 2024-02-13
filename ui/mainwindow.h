@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSerialPort>
+#include <QQmlApplicationEngine>
 #include "../src/serial/serialthread.h"
 
 QT_BEGIN_NAMESPACE
@@ -31,5 +32,6 @@ private:
     QSerialPort *m_serial = nullptr;
     SerialThread m_thread;
     unsigned long time = 5000; // Time for program to wait for serialThread to close, in ms
+    QQmlApplicationEngine *engine;
 };
 #endif // MAINWINDOW_H

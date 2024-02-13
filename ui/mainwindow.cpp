@@ -1,11 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "streetmapview.h"
+#include "src/map/streetmapview.h"
 #include <QSerialPortInfo>
 #include <QSerialPort>
 #include <QMessageBox>
 #include <QTextStream>
 #include <iostream>
+#include <QQuickView>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,7 +26,17 @@ MainWindow::MainWindow(QWidget *parent)
         ui->portSelect->addItem(serialPortInfo.portName()); // If working in WSL 2, you need to pass the USB connection through for this to work.
     }
 
+//    engine->load(QUrl(QStringLiteral("qrc:/streetmapview.qml")));
+//    QWindow *qml_window = qobject_cast<QWindow*>(engine->rootObjects().at(0));
+//    QWidget *container = QWidget::createWindowContainer(qml_window, this);
+//    container->setMinimumSize(200, 200);
+//    container->setMaximumSize(1200, 900);
 
+//    this->layout()->addWidget(container);
+
+    QQuickWidget* streetmapview = new QQuickWidget();
+    streetmapview->setSource(QUrl(QStringLiteral("qrc:/streetmapview.qml")));
+    streetmapview->show();
 }
 
 MainWindow::~MainWindow()
