@@ -52,6 +52,7 @@ void SerialThread::setStopFlag(bool newState)
     m_mutex.lock();
     m_stop = newState;
     m_mutex.unlock();
+    m_serial_mode = false;
 }
 
 bool SerialThread::getStopFlag()
@@ -92,7 +93,7 @@ QString SerialThread::getFile()
 
 void SerialThread::run()
 {
-    if (m_serial_mode)
+    if (m_serial_mode)  // Serial Mode
     {
         QSerialPort serial;
         QString port;
@@ -143,7 +144,7 @@ void SerialThread::run()
 
         serial.close();
     }
-    else
+    else    // File mode
     {
         GpsData result;
         QFile file(getFile());
@@ -167,7 +168,6 @@ void SerialThread::run()
                     qDebug() << "Invalid data blocked" << Qt::endl;
                 }
             }
-
         }
 
         file.close();

@@ -69,26 +69,25 @@ struct TeleGPS : public GpsFormat {
         return ",";
     }
     QString get_packet() override {
-        return "$GPGGA";
+        return "TELEM";
     }
     int get_packet_type_i() override {
         return 0;
     }
     int get_time_i() override  {
-        return 1;
-    }
-    int get_lat_i() override {
-        return 2;
-    }
-    int get_long_i() override {
-        return 4;
-    }
-    int get_alt_i() override {
         return 9;
     }
+    int get_lat_i() override {
+        return 7;
+    }
+    int get_long_i() override {
+        return 8;
+    }
+    int get_alt_i() override {
+        return 6;
+    }
     QTime time_format(QString &time_data) override {
-        QString reformat = QString("%1:%2:%3").arg(time_data.left(2), time_data.mid(2,2), time_data.right(6));
-        return QTime::fromString(reformat);
+        return QTime::fromString(time_data);
     };
 };
 

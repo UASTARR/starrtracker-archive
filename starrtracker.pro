@@ -22,6 +22,7 @@ SOURCES += \
 #    src/map/FlightTrajectory.cpp \
 #    src/map/Position.cpp \
 #    src/map/position.cpp \
+    src/graph/Graph.cpp \
     src/graph/qcustomplot.cpp \
     src/serial/gpsparser.cpp \
     src/serial/serialthread.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
 #    src/map/FlightTrajectory.h \
 #    src/map/Position.h \
 #    src/map/position.h \
+    src/graph/Graph.h \
     src/graph/qcustomplot.h \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \

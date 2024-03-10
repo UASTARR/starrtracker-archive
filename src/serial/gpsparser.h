@@ -39,6 +39,7 @@ private:
 
     const QStringList GPS_TYPES_ACCEPTED = {"Featherweight", "TeleGPS"};
 
+    QString parseTeleGPS(QString &data);
 };
 
 #endif // GPSPARSER_H
