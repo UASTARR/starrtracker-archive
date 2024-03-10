@@ -30,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&m_thread, &SerialThread::error, this, &MainWindow::handleError);
     connect(&m_thread, &SerialThread::dataReady, this, &MainWindow::handleDataReady);
 
+    // Fixed: Shows indication if the GPS tracker stops recieving new packets.
+    connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleSerialError);
+
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
 
     for (const QSerialPortInfo &serialPortInfo : serialPortInfos) {
@@ -121,11 +124,46 @@ void MainWindow::closeSerialPort()
     }
 }
 
-// TODO: Where is this used?
+//void MainWindow::handleSerialError(QSerialPort::SerialPortError error) {
+//    if (error == QSerialPort::ResourceError) {
+//        QMessageBox::critical(this, tr("Critical Error"), m_serial->errorString());
+//        closeSerialPort();
+//    }
+//}
+
+// Test: To check if this works. Have added automatic functionality to attempt reconnection every 5 second.
+// Check: If UI is responsive when reconnection happens.
 void MainWindow::handleSerialError(QSerialPort::SerialPortError error) {
-    if (error == QSerialPort::ResourceError) {
-        QMessageBox::critical(this, tr("Critical Error"), m_serial->errorString());
-        closeSerialPort();
+    switch (error) {
+        case QSerialPort::NotOpenError:
+            QMessageBox::critical(this, tr("Critical Error"), tr("Serial port is not open."));
+            closeSerialPort();
+            break;
+        case QSerialPort::ResourceError:
+            QMessageBox::critical(this, tr("Critical Error"), m_serial->errorString());
+            closeSerialPort();
+            break;
+        case QSerialPort::TimeoutError:
+            QMessageBox::critical(this, tr("Serial Port Error"), tr("Timeout error occurred."));
+            closeSerialPort();
+            break;
+
+        default:
+            QMessageBox::critical(this, tr("Unknown Error"), tr("An unknown error occurred."));
+            break;
+    }
+
+    // Attempt automatic reconnection
+    QTimer::singleShot(5000, this, &MainWindow::attemptSerialReconnect); // Retry after 5 seconds
+}
+
+void MainWindow::attemptSerialReconnect() {
+    if (!m_serial->isOpen()) {
+        if (m_serial->open(QIODevice::ReadWrite)) {
+            qDebug() << "Serial port reconnected successfully.";
+        } else {
+            qDebug() << "Failed to reconnect to serial port:" << m_serial->errorString();
+        }
     }
 }
 

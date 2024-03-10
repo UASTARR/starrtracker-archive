@@ -38,5 +38,6 @@ private:
     QVector<double> qt_time, qt_x, qt_y, qt_alt;
     u_int graphCount = 0;
     u_int checkCount = 1000;
+    void attemptSerialReconnect();
 };
 #endif // MAINWINDOW_H
