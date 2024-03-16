@@ -30,7 +30,7 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
             break;
         }
         default:
-            qDebug() << "Unkown Data type" << Qt::endl;
+            qDebug() << "Unknown Data type" << Qt::endl;
             return result;
     }
     qDebug() << data ;
@@ -41,13 +41,16 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
     }
 
     QStringList dataStrList = data.split(parserFormat->get_seperator());
-    if (sizeof(data)>=8 && dataStrList[parserFormat->get_packet_type_i()] == parserFormat->get_packet())
+    if (sizeof(data)>=8 && parserFormat->get_packet_type(dataStrList) == parserFormat->get_packet())
     {
         result.gps_name = parserFormat->get_name();
-        result.latitude = dataStrList[parserFormat->get_lat_i()].toFloat();
-        result.longitude = dataStrList[parserFormat->get_long_i()].toFloat();
-        result.altitude = dataStrList[parserFormat->get_alt_i()].toFloat();
-        result.time = parserFormat->time_format(dataStrList[parserFormat->get_time_i()]);
+        result.latitude = parserFormat->get_lat(dataStrList);
+        result.longitude = parserFormat->get_long(dataStrList);
+        result.altitude = parserFormat->get_alt(dataStrList);
+//        result.latitude = dataStrList[parserFormat->get_lat_i()].toFloat();
+//        result.longitude = dataStrList[parserFormat->get_long_i()].toFloat();
+//        result.altitude = dataStrList[parserFormat->get_alt_i()].toFloat();
+        result.time = parserFormat->get_time(dataStrList);
         result.valid = true;
     }
     else
@@ -77,20 +80,18 @@ void GPSParser::storeData(const QString &data)
 // Still laggy. Some data is bad. Need to check with groundStation.
 QString GPSParser::parseTeleGPS(QString &data)
 {
+    // Add check for packet type.
     QString type = data.split(" ")[0];
     QString modifiedString, reverseData;
     if (type == "TELEM"){
         data = data.split(" ")[1];
 
-        QList<int> splits;
         bool ok = false;
-
-        splits << 2 << 4 << 4 << 2 << 2 << 4 << 8 << 8;
-
         for (int i = data.length(); i > -1; i-=2){
             reverseData += data.mid(i, 2);
         }
-        reverseData = reverseData.right(reverseData.length() - 26);
+        reverseData = reverseData.right(reverseData.length());
+        qDebug() << reverseData;
 
         modifiedString += "TELEM,";
         for (const int i : splits){
@@ -104,13 +105,13 @@ QString GPSParser::parseTeleGPS(QString &data)
             reverseData.chop(i);
         }
 
-        // Time: I think refers to the current time. Not time elapsed since device start.
-        QString temp1 = QString::number(reverseData.left(2).toUInt(&ok, 16));
-        QString temp2 = QString::number(reverseData.mid(2,2).toUInt(&ok, 16));
-        QString temp3 = QString("%1").arg(reverseData.mid(4, 2).toUInt(&ok, 16), 2, 10, QChar('0'));;
-        if (ok){
-            modifiedString.append(QString("%1:%2:%3.000").arg(temp3, temp2, temp1));
-        }
+        // Check 0 in time.
+//        QString temp1 = QString::number(reverseData.left(2).toUInt(&ok, 16));
+//        QString temp2 = QString::number(reverseData.mid(2,2).toUInt(&ok, 16));
+//        QString temp3 = QString("%1").arg(reverseData.mid(4, 2).toUInt(&ok, 16), 2, 10, QChar('0'));;
+//        if (ok){
+//            modifiedString.append(QString("%1:%2:%3.000").arg(temp3, temp2, temp1));
+//        }
     }
     return modifiedString;
 }

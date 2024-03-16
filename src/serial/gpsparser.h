@@ -40,6 +40,8 @@ private:
     const QStringList GPS_TYPES_ACCEPTED = {"Featherweight", "TeleGPS"};
 
     QString parseTeleGPS(QString &data);
+
+    QList<int> splits {2,4,4,2,2,4,8,8,2,2,2,2,2,2,2,2,2,2,4,4,2,2};
 };
 
 #endif // GPSPARSER_H

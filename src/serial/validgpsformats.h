@@ -21,12 +21,15 @@ struct GpsFormat {
     virtual QString get_name() = 0; // Name of GPS tracker
     virtual QString get_seperator() = 0; // data sperator
     virtual QString get_packet() = 0; // Desired packet type
-    virtual int get_packet_type_i() = 0; // Packet type index
-    virtual int get_time_i() = 0; // Time index
-    virtual int get_lat_i() = 0; // Latitude index
-    virtual int get_long_i() = 0; // Longitude index
-    virtual int get_alt_i() = 0; // Altitude index
-    virtual QTime time_format(QString &time_data) = 0; // Parses string version of time data into a QTime object
+    virtual QString get_packet_type(QStringList &data_string) = 0; // Packet type index
+    virtual float get_lat(QStringList &data_string) = 0;
+    virtual float get_long(QStringList &data_string) = 0;
+    virtual float get_alt(QStringList &data_string) = 0;
+//    virtual int get_time_i() = 0; // Time index
+//    virtual int get_lat_i() = 0; // Latitude index
+//    virtual int get_long_i() = 0; // Longitude index
+//    virtual int get_alt_i() = 0; // Altitude index
+    virtual QTime get_time(QStringList &data_string) = 0; // Parses string version of time data into a QTime object
 
     virtual ~GpsFormat() = default; // Virtual deconstructor
 };
@@ -41,24 +44,33 @@ struct Featherweight : public GpsFormat {
     QString get_packet() override {
         return "GPS_STAT";
     }
-    int get_packet_type_i() override {
-        return 1;
+    QString get_packet_type(QStringList &data_string) override {
+        return data_string[14];
     }
-    int get_time_i() override  {
-        return  6;
+//    int get_time_i() override  {
+//        return  6;
+//    }
+//    int get_lat_i() override {
+//        return 14;
+//    }
+//    int get_long_i() override {
+//        return 16;
+//    }
+//    int get_alt_i() override {
+//        return 12;
+//    }
+    float get_lat(QStringList &data_string) override {
+        return data_string[14].toFloat();
     }
-    int get_lat_i() override {
-        return 14;
+    float get_long(QStringList &data_string) override {
+        return data_string[16].toFloat();
     }
-    int get_long_i() override {
-        return 16;
+    float get_alt(QStringList &data_string) override {
+        return data_string[12].toFloat();
     }
-    int get_alt_i() override {
-        return 12;
+    QTime get_time(QStringList &data_string) override {
+        return QTime::fromString(data_string[6]);
     }
-    QTime time_format(QString &time_data) override {
-        return QTime::fromString(time_data);
-    };
 };
 
 struct TeleGPS : public GpsFormat {
@@ -69,25 +81,34 @@ struct TeleGPS : public GpsFormat {
         return ",";
     }
     QString get_packet() override {
-        return "TELEM";
+        return "5";
     }
-    int get_packet_type_i() override {
-        return 0;
+    QString get_packet_type(QStringList &data_string) override {
+        return data_string[4];
     }
-    int get_time_i() override  {
-        return 9;
-    }
-    int get_lat_i() override {
-        return 7;
-    }
-    int get_long_i() override {
-        return 8;
-    }
-    int get_alt_i() override {
-        return 6;
-    }
-    QTime time_format(QString &time_data) override {
-        return QTime::fromString(time_data);
+    //    int get_time_i() override  {
+    //        return 9;
+    //    }
+    //    int get_lat_i() override {
+    //        return 7;
+    //    }
+    //    int get_long_i() override {
+    //        return 8;
+    //    }
+    //    int get_alt_i() override {
+    //        return 6;
+    //    }
+    float get_lat(QStringList &data_string) override {
+        return data_string[7].toFloat() / 107.0;         // Extracting the latitude -> Requires division by 107
+    };
+    float get_long(QStringList &data_string) override {
+        return data_string[8].toFloat() / 107.0;         // Extracting the latitude -> Requires division by 107
+    };
+    float get_alt(QStringList &data_string) override {
+        return data_string[6].toFloat();
+    };
+    QTime get_time(QStringList &data_string) override {
+        return QTime::fromString(data_string[9]);
     };
 };
 
