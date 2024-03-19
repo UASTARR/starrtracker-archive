@@ -30,7 +30,7 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
             break;
         }
         default:
-            qDebug() << "Unknown Data type" << Qt::endl;
+            qDebug() << "Unknown Data type" << endl;
             return result;
     }
     qDebug() << data ;
@@ -55,7 +55,7 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
     }
     else
     {
-        qDebug() << "Undesired Data\n" << data <<Qt::endl;
+        qDebug() << "Undesired Data\n" << data <<endl;
     }
     delete parserFormat;
     return result;
@@ -68,7 +68,7 @@ void GPSParser::storeData(const QString &data)
     if (file.open(QIODevice::Append | QIODevice::Text))
     {
         QTextStream stream(&file);
-        stream << data << Qt::endl;
+        stream << data << endl;
         file.close();
     }
     else
