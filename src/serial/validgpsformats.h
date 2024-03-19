@@ -45,7 +45,7 @@ struct Featherweight : public GpsFormat {
         return "GPS_STAT";
     }
     QString get_packet_type(QStringList &data_string) override {
-        return data_string[14];
+        return data_string[1];
     }
 //    int get_time_i() override  {
 //        return  6;

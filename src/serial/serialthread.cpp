@@ -128,11 +128,11 @@ void SerialThread::run()
                     if (result.valid)
                     {
                         emit dataReady(result);
-                        qDebug() << "Sending data...\n" << result.gps_name << Qt::endl;
+                        qDebug() << "Sending data...\n" << result.gps_name << endl;
                     }
                     else
                     {
-                        qDebug() << "Invalid data blocked" << Qt::endl;
+                        qDebug() << "Invalid data blocked" << endl;
                     }
                 }
                 if (getStopFlag())
@@ -161,11 +161,11 @@ void SerialThread::run()
                 if (result.valid)
                 {
                     emit dataReady(result);
-                    qDebug() << "Sending data...\n" << result.gps_name << Qt::endl;
+                    qDebug() << "Sending data...\n" << result.gps_name << endl;
                 }
                 else
                 {
-                    qDebug() << "Invalid data blocked" << Qt::endl;
+                    qDebug() << "Invalid data blocked" << endl;
                 }
             }
         }

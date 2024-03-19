@@ -91,7 +91,7 @@ void MainWindow::openSerialPort()
             QString port = ui->portSelect->currentText();
             int baud = ui->baudSelect->currentText().toInt();
             bool save = ui->saveButton->isChecked();
-            if (!port.isEmpty() and !baud){
+            if (!port.isEmpty() and baud!=0){
                 m_thread.startSerialDataThread(port, baud, save);
                 graphCount = 0;
             } else
