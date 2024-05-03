@@ -188,8 +188,8 @@ void MainWindow::handleDataReady(const GpsData &data)
     qt_y.append(data.longitude);
     qt_alt.append(data.altitude);
 
-    ui->gpsType->setText(data.gps_name);
-    ui->textBrowser->setText(tr("Time: %1\nLatitude: %2\nLongitude: %3\nAltitude: %4\n").arg(data.time.toString("HH:mm:ss"), QString::number(data.latitude), QString::number(data.longitude), QString::number(data.altitude)));
+    ui->gpstype->setText(data.gps_name);
+    ui->textbrowser->setText(tr("Time: %1\nLatitude: %2\nLongitude: %3\nAltitude: %4\n").arg(data.time.toString("HH:mm:ss"), QString::number(data.latitude), QString::number(data.longitude), QString::number(data.altitude)));
 
     values[1]->addGraph(qt_time, qt_x);
     values[2]->addGraph(qt_time, qt_y);
