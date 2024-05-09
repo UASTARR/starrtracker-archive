@@ -118,12 +118,27 @@ void SerialThread::run()
         {
             QString data;
             GpsData result;
+            /*
+             * Looking for the following string:
+             * manufacturer     altusmetrum.org\r\n
+             * product          TeleBT-v4.0\r\n
+             * serial-number    12056\r\n
+             * program-space    28672\r\n
+             */
+            QString teleGPSCheck = "manufacturer     altusmetrum.org\r\n";  // Need to make this better.
             serial.clear();
+            serial.write("v\n");
+            if (result.gps_name == "")
             while (serial.waitForReadyRead(-1))
             {
                 while (serial.canReadLine())
                 {
                     data = QString::fromLocal8Bit(serial.readLine());
+                    qDebug() << data;
+                    if (data == teleGPSCheck){
+                        serial.write("m34\n");
+                    }
+
                     result = m_gpsTracker.parse(data, m_save_data);
                     if (result.valid)
                     {

@@ -58,6 +58,7 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
     else
     {
         qDebug() << "Undesired Data\n" << data <<endl;
+        result.valid = false;
     }
     delete parserFormat;
     return result;

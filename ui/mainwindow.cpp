@@ -52,7 +52,7 @@ MainWindow::~MainWindow()
     if (m_serial->isOpen())
         m_serial->close();
 
-    // If  serialThread is still running, try closing port. If that doesn't work, serial thread is force closed
+    // If serialThread is still running, try closing port. If that doesn't work, serial thread is force closed
     if (m_thread.isRunning())
     {
         closeSerialPort();
