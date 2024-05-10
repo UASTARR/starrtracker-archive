@@ -26,7 +26,8 @@ SOURCES += \
     src/graph/qcustomplot.cpp \
     src/serial/gpsparser.cpp \
     src/serial/serialthread.cpp \
-    ui/mainwindow.cpp
+    ui/mainwindow.cpp \
+    ui/sensor.cpp
 
 HEADERS += \
 #    src/RocketMath.h \
@@ -38,10 +39,12 @@ HEADERS += \
     src/serial/gpsparser.h \
     src/serial/serialthread.h \
     src/serial/validgpsformats.h \
-    ui/mainwindow.h
+    ui/mainwindow.h \
+    ui/sensor.h
 
 FORMS += \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    ui/sensor.ui
 
 INCLUDEPATH += $$PWD
 

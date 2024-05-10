@@ -28,7 +28,7 @@ public:
 //    };
 
     GpsData parse(QString &data, bool &storeGPSData);
-    void storeData(const QString &data);
+    void storeData(const QString &data, const QString &name);
 
     double getLongitude();
     double getLatitude();

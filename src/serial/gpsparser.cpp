@@ -39,7 +39,7 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
     // Note it will not store the original data. It will store the modified readable data.
     // To store original data, we will have to move it into the switch statement.
     if (storeGPSData) {
-        storeData(data);
+        storeData(data, parserFormat->get_name());
     }
 
     QStringList dataStrList = data.split(parserFormat->get_seperator());
@@ -64,10 +64,18 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
     return result;
 }
 
-void GPSParser::storeData(const QString &data)
+void GPSParser::storeData(const QString &data, const QString &name)
 {
+    QFile file;
+    if (name == Featherweight().get_name()){
+        file.setFileName("featherweight_data.txt");
+    } else if (name == TeleGPS().get_name()){
+        file.setFileName("telegps_data.txt");
+    } else {
+        file.setFileName("data.txt");
+    }
     // Appending parsed data to text file
-    QFile file("gps_data.txt");
+
     if (file.open(QIODevice::Append | QIODevice::Text))
     {
         QTextStream stream(&file);
