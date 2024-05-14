@@ -1,8 +1,8 @@
 #include "ui/mainwindow.h"
 
 #include <QApplication>
-#include <QSerialPortInfo>
-#include <QComboBox>
+// #include <QSerialPortInfo>
+// #include <QComboBox>
 
 int main(int argc, char *argv[])
 {

@@ -1,6 +1,8 @@
+TEMPLATE = app
 QT       += core gui
 QT       += serialport
-
+QT       += qml quick
+QT       += quickwidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++11
@@ -45,6 +47,16 @@ HEADERS += \
 FORMS += \
     ui/mainwindow.ui \
     ui/sensor.ui
+
+RESOURCES += qml.qrc
+
+# Additional import path used to resolve QML modules in Qt Creator's code model
+QML_IMPORT_PATH = /usr/lib/x86_64-linux-gnu/qt5/qml
+
+# Additional import path used to resolve QML modules just for Qt Quick Designer
+QML_DESIGNER_IMPORT_PATH =
+
+DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += $$PWD
 

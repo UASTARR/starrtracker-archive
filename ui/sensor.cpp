@@ -45,6 +45,10 @@ Sensor::Sensor(QWidget *parent) :
     values[1]->setGraph(-9000, 9000);
     values[2]->setGraph(-18000, 18000);
     values[3]->setGraph(0, 1800);
+
+    // Map Connection
+    ui->QW_Map->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
+    ui->QW_Map->show();
 }
 
 Sensor::~Sensor()
