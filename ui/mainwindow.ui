@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>715</height>
+    <width>1246</width>
+    <height>667</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1281</width>
-      <height>691</height>
+      <width>1241</width>
+      <height>641</height>
      </rect>
     </property>
     <property name="tabShape">
@@ -55,7 +55,7 @@
    <widget class="QPushButton" name="add_sensor">
     <property name="geometry">
      <rect>
-      <x>1160</x>
+      <x>1130</x>
       <y>0</y>
       <width>105</width>
       <height>29</height>
@@ -71,7 +71,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1280</width>
+     <width>1246</width>
      <height>26</height>
     </rect>
    </property>
