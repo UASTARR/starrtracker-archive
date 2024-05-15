@@ -27,7 +27,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>-1</number>
     </property>
     <property name="documentMode">
      <bool>false</bool>
@@ -41,16 +41,6 @@
     <property name="tabBarAutoHide">
      <bool>false</bool>
     </property>
-    <widget class="QWidget" name="gps_1">
-     <attribute name="title">
-      <string>Tab 1</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="gps_2">
-     <attribute name="title">
-      <string>Tab 2</string>
-     </attribute>
-    </widget>
    </widget>
    <widget class="QPushButton" name="add_sensor">
     <property name="geometry">

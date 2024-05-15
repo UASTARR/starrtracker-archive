@@ -3,6 +3,15 @@
 
 #include <QWidget>
 #include <QSerialPort>
+#include <QVariant>
+#include <QtCore>
+#include <QtGui>
+#include <QtQuick>
+#include <QSerialPortInfo>
+#include <QMessageBox>
+#include <QTextStream>
+#include <QDebug>
+#include <QQmlContext>
 #include <src/graph/Graph.h>
 #include <src/graph/qcustomplot.h>
 #include "../src/serial/serialthread.h"
@@ -25,9 +34,9 @@ private slots:
     void openSerialPort();
     void closeSerialPort();
 
-    void on_next_clicked();
-
     void on_prev_clicked();
+
+    void on_next_clicked();
 
 public:
     explicit Sensor(QWidget *parent = nullptr);
@@ -43,6 +52,11 @@ private:
     u_int graphCount = 0;
     u_int checkCount = 1000;
     void attemptSerialReconnect();
+    float lat, lon;
+
+signals:
+    void setLocationMarker_1(QVariant, QVariant);
+    void setLocationMarker_2(QVariant, QVariant);
 };
 
 #endif // SENSOR_H

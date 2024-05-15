@@ -1,12 +1,6 @@
 #include "sensor.h"
 #include "ui_sensor.h"
-#include <QSerialPortInfo>
-#include <QSerialPort>
-#include <QMessageBox>
-#include <QTextStream>
-#include <iostream>
-#include <QDebug>
-#include <src/graph/Graph.h>
+
 Q_DECLARE_METATYPE(GpsData)
 
 Sensor::Sensor(QWidget *parent) :
@@ -39,6 +33,7 @@ Sensor::Sensor(QWidget *parent) :
         ui->portSelect->addItem(serialPortInfo.portName()); // If working in WSL 2, you need to pass the USB connection through for this to work.
     }
 
+    // Setup Graph
     values[1] = new Graph(ui->graph_x);
     values[2] = new Graph(ui->graph_y);
     values[3] = new Graph(ui->graph_alt);
@@ -46,9 +41,17 @@ Sensor::Sensor(QWidget *parent) :
     values[2]->setGraph(-18000, 18000);
     values[3]->setGraph(0, 1800);
 
-    // Map Connection
+    // Setup Map
     ui->QW_Map->setSource(QUrl(QStringLiteral("qrc:/main.qml")));
     ui->QW_Map->show();
+
+    auto Obje = ui->QW_Map->rootObject();
+    connect(this, SIGNAL(setLocationMarker_1(QVariant, QVariant)), Obje, SLOT(setLocationMarker_1(QVariant, QVariant)));
+    connect(this, SIGNAL(setLocationMarker_2(QVariant, QVariant)), Obje, SLOT(setLocationMarker_2(QVariant, QVariant)));
+
+    // Test map positioning
+    // emit setLocationMarker_1(32.940663834569825, -106.92168026906077);
+    // emit setLocationMarker_2(32.822916006258545, -106.76134576212984);
 }
 
 Sensor::~Sensor()
@@ -195,6 +198,13 @@ void Sensor::handleDataReady(const GpsData &data)
     ui->gpstype->setText(data.gps_name);
     ui->textbrowser->setText(tr("Time: %1\nLatitude: %2\nLongitude: %3\nAltitude: %4\n").arg(data.time.toString("HH:mm:ss"), QString::number(data.latitude), QString::number(data.longitude), QString::number(data.altitude)));
 
+    if (lat == 0 && lon == 0){
+        lat = data.latitude;
+        lon = data.longitude;
+    }
+    emit setLocationMarker_1(lat, lon);
+    emit setLocationMarker_2(data.latitude, data.longitude);
+
     values[1]->addGraph(qt_time, qt_x);
     values[2]->addGraph(qt_time, qt_y);
     values[3]->addGraph(qt_time, qt_alt);
@@ -215,4 +225,3 @@ void Sensor::on_prev_clicked()
 {
     ui->stackedDisplay->setCurrentIndex(0);
 }
-
