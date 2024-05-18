@@ -10,6 +10,8 @@ Rectangle {
     property double lat_2;
     property double lon_2;
 
+    property list<MapQuickItem> markers;
+
     property Component locationMarker_1: locmarker_1;
     property Component locationMarker_2: locmarker_2;
 
@@ -31,7 +33,6 @@ Rectangle {
                 value: ':/offline_tiles/'
             }
         }
-
         MapPolyline{
             line.width: 3
             line.color: "blue"
@@ -42,21 +43,32 @@ Rectangle {
         }
     }
 
-    function setLocationMarker_1(lati, loni){
-        // map.clearMapItems()
-        var item = locationMarker_1.createObject(mapview, {
-                                                 coordinate:QtPositioning.coordinate(lati, loni)})
+    function setLocationMarker_1(lati, loni) {
+        clearMarkers()
         lat_1 = lati
         lon_1 = loni
-        map.addMapItem(item)
+        addMarker(lati, loni, locmarker_1)
     }
 
-    function setLocationMarker_2(lati, loni){
-        var item = locationMarker_2.createObject(mapview, {
-                                                 coordinate:QtPositioning.coordinate(lati, loni)})
+    function setLocationMarker_2(lati, loni) {
         lat_2 = lati
         lon_2 = loni
+        addMarker(lati, loni, locmarker_2)
+    }
+
+    function clearMarkers() {
+        for (var i = 0; i < markers.length; i++) {
+            map.removeMapItem(markers[i])
+        }
+        markers = []
+    }
+
+    function addMarker(lat, lon, component) {
+        var item = component.createObject(map, {
+            coordinate: QtPositioning.coordinate(lat, lon)
+        })
         map.addMapItem(item)
+        markers.push(item)
     }
 
     Component{
