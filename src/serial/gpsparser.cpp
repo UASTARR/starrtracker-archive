@@ -57,7 +57,7 @@ GpsData GPSParser::parse(QString &data, bool &storeGPSData)
     }
     else
     {
-        qDebug() << "Undesired Data\n" << data <<endl;
+        // qDebug() << "Undesired Data\n" << data <<endl;
         result.valid = false;
     }
     delete parserFormat;
@@ -89,40 +89,69 @@ void GPSParser::storeData(const QString &data, const QString &name)
 }
 
 // Still laggy. Some data is bad. Need to check with groundStation.
-QString GPSParser::parseTeleGPS(QString &data)
+QString GPSParser::parseTeleGPS(const QString &data)
 {
-    // Add check for packet type.
-    QString type = data.split(" ")[0];
-    QString modifiedString, reverseData;
-    if (type == "TELEM"){
-        data = data.split(" ")[1];
-
+    QStringList tokens = data.split(" ");
+    QString modifiedData, reversedData;
+    if (tokens[0] == "TELEM"){
+        QString oldData = tokens[1];
+        for (int i = oldData.length(); i > -1; i-=2){
+            reversedData += oldData.midRef(i, 2);
+        }
         bool ok = false;
-        for (int i = data.length(); i > -1; i-=2){
-            reverseData += data.mid(i, 2);
+        modifiedData += "TELEM ";
+        int header = reversedData.rightRef(2).toInt(&ok, 16);
+        if (header == 34){
+            modifiedData.append(QString::number(reversedData.rightRef(2).toInt(&ok, 16)) + " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(reversedData.rightRef(4).toInt(&ok, 16)) + " ");
+            reversedData.chop(4);
+            modifiedData.append(QString::number(reversedData.rightRef(4).toUInt(&ok, 16) / 100) + " ");
+            reversedData.chop(4);
+            modifiedData.append(QString::number(reversedData.rightRef(2).toInt(&ok, 16)) + " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(0x0F && (reversedData.rightRef(2).toUInt(&ok, 16) >> 4))+ " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(reversedData.rightRef(4).toInt(&ok, 16)) + " ");
+            reversedData.chop(4);
+            int32_t decValue = (reversedData.rightRef(8).toLongLong(&ok, 16));
+            reversedData.chop(8);
+            modifiedData.append(QString::number(decValue / 10.0e6)+ " ");
+            decValue = (reversedData.rightRef(8).toLongLong(&ok, 16));
+            modifiedData.append(QString::number(decValue / 10.0e6)+ " ");
+            reversedData.chop(8);
+
+            int year = reversedData.rightRef(2).toUInt(&ok, 16);
+            reversedData.chop(2);
+            int month = reversedData.rightRef(2).toUInt(&ok, 16);
+            reversedData.chop(2);
+            int day = reversedData.rightRef(2).toUInt(&ok, 16);
+            reversedData.chop(2);
+            int hour = reversedData.rightRef(2).toUInt(&ok, 16);
+            reversedData.chop(2);
+            int min = reversedData.rightRef(2).toUInt(&ok, 16);
+            reversedData.chop(2);
+            int sec = reversedData.rightRef(2).toUInt(&ok, 16);
+            reversedData.chop(2);
+            modifiedData.append(QString::number(day) + "-" + QString::number(month) + "-" + QString::number(year) + " ");
+            modifiedData.append(QString::number(hour) + ":" + QString::number(min) + ":" + QString::number(sec) + " ");
+            modifiedData.append(QString::number(reversedData.rightRef(2).toUInt(&ok, 16) / 5.0) + " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(reversedData.rightRef(2).toUInt(&ok, 16) / 5.0) + " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(reversedData.rightRef(2).toUInt(&ok, 16) / 5.0) + " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(reversedData.rightRef(2).toUInt(&ok, 16)) + " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(reversedData.rightRef(4).toUInt(&ok, 16)) + " ");
+            reversedData.chop(4);
+            modifiedData.append(QString::number(reversedData.rightRef(4).toInt(&ok, 16)) + " ");
+            reversedData.chop(4);
+            modifiedData.append(QString::number(reversedData.rightRef(2).toUInt(&ok, 16)) + " ");
+            reversedData.chop(2);
+            modifiedData.append(QString::number(reversedData.rightRef(2).toUInt(&ok, 16)));
+            reversedData.chop(2);
         }
-        reverseData = reverseData.right(reverseData.length());
-        qDebug() << reverseData;
-
-        modifiedString += "TELEM,";
-        for (const int i : splits){
-            QString temp = QString::number(reverseData.right(i).toUInt(&ok, 16));
-            if (ok){
-                modifiedString.append(temp + ",");
-            } else {
-                return "";
-            }
-
-            reverseData.chop(i);
-        }
-
-        // Check 0 in time.
-//        QString temp1 = QString::number(reverseData.left(2).toUInt(&ok, 16));
-//        QString temp2 = QString::number(reverseData.mid(2,2).toUInt(&ok, 16));
-//        QString temp3 = QString("%1").arg(reverseData.mid(4, 2).toUInt(&ok, 16), 2, 10, QChar('0'));;
-//        if (ok){
-//            modifiedString.append(QString("%1:%2:%3.000").arg(temp3, temp2, temp1));
-//        }
     }
-    return modifiedString;
+    return modifiedData;
 }

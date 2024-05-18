@@ -39,9 +39,8 @@ private:
 
     const QStringList GPS_TYPES_ACCEPTED = {"Featherweight", "TeleGPS"};
 
-    QString parseTeleGPS(QString &data);
-
-    QList<int> splits {2,4,4,2,2,4,8,8,2,2,2,2,2,2,2,2,2,2,4,4,2,2};
+    // Still laggy. Some data is bad. Need to check with groundStation.
+    QString parseTeleGPS(const QString &data);
 };
 
 #endif // GPSPARSER_H

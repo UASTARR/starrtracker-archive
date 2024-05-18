@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QTime>
-#include <iostream>
 
 //  GPS Data displayed to the user
 struct GpsData {
@@ -30,7 +29,7 @@ struct GpsFormat {
 //    virtual int get_long_i() = 0; // Longitude index
 //    virtual int get_alt_i() = 0; // Altitude index
     virtual QTime get_time(QStringList &data_string) = 0; // Parses string version of time data into a QTime object
-
+    virtual bool is_valid(QStringList &data_string) = 0;
     virtual ~GpsFormat() = default; // Virtual deconstructor
 };
 
@@ -47,18 +46,6 @@ struct Featherweight : public GpsFormat {
     QString get_packet_type(QStringList &data_string) override {
         return data_string[1];
     }
-//    int get_time_i() override  {
-//        return  6;
-//    }
-//    int get_lat_i() override {
-//        return 14;
-//    }
-//    int get_long_i() override {
-//        return 16;
-//    }
-//    int get_alt_i() override {
-//        return 12;
-//    }
     float get_lat(QStringList &data_string) override {
         return data_string[14].toFloat();
     }
@@ -66,10 +53,13 @@ struct Featherweight : public GpsFormat {
         return data_string[16].toFloat();
     }
     float get_alt(QStringList &data_string) override {
-        return data_string[12].toFloat();
+        return data_string[12].toFloat() * 0.3048;
     }
     QTime get_time(QStringList &data_string) override {
         return QTime::fromString(data_string[6]);
+    }
+    bool is_valid(QStringList &data_string) override {
+        return (data_string[8] == "CRC_OK") ? 1 : 0;
     }
 };
 
@@ -78,7 +68,7 @@ struct TeleGPS : public GpsFormat {
         return "TeleGPS";
     }
     QString get_seperator() override {
-        return ",";
+        return " ";
     }
     QString get_packet() override {
         return "5";
@@ -86,30 +76,23 @@ struct TeleGPS : public GpsFormat {
     QString get_packet_type(QStringList &data_string) override {
         return data_string[4];
     }
-    //    int get_time_i() override  {
-    //        return 9;
-    //    }
-    //    int get_lat_i() override {
-    //        return 7;
-    //    }
-    //    int get_long_i() override {
-    //        return 8;
-    //    }
-    //    int get_alt_i() override {
-    //        return 6;
-    //    }
     float get_lat(QStringList &data_string) override {
-        return data_string[7].toFloat() / 107.0;         // Extracting the latitude -> Requires division by 107
+        return data_string[7].toFloat();
     };
     float get_long(QStringList &data_string) override {
-        return data_string[8].toFloat() / 107.0;         // Extracting the latitude -> Requires division by 107
+        return data_string[8].toFloat();
     };
     float get_alt(QStringList &data_string) override {
         return data_string[6].toFloat();
     };
     QTime get_time(QStringList &data_string) override {
-        return QTime::fromString(data_string[9]);
-    };
+        QTime a(0,0,0);
+        a = a.addSecs(data_string[3].toInt());
+        return a;
+    }
+    bool is_valid(QStringList &data_string) override {
+        return data_string[5].toInt();
+    }
 };
 
 #endif // VALIDGPSFORMATS_H

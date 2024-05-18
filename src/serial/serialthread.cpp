@@ -171,6 +171,7 @@ void SerialThread::run()
 
         while(!in.atEnd()) {
             QString data = in.readLine();
+            qDebug() << data;
             if (data != ""){
                 result = m_gpsTracker.parse(data, m_save_data);
                 if (result.valid)
@@ -183,6 +184,7 @@ void SerialThread::run()
                     qDebug() << "Invalid data blocked" << endl;
                 }
             }
+
         }
 
         file.close();
