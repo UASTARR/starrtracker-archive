@@ -26,17 +26,15 @@ class Sensor : public QWidget
 
 private slots:
     void writeData(const QByteArray &data);
-
     void handleSerialError(QSerialPort::SerialPortError error);
     void handleError(const QString &s);
     void handleDataReady(const GpsData &data);
-
     void openSerialPort();
     void closeSerialPort();
-
     void on_prev_clicked();
-
     void on_next_clicked();
+    void on_resetBtn1_clicked();
+    void on_resetBtn2_clicked();
 
 public:
     explicit Sensor(QWidget *parent = nullptr);
@@ -53,6 +51,7 @@ private:
     u_int checkCount = 1000;
     void attemptSerialReconnect();
     float lat, lon;
+    void resetScreen();
 
 signals:
     void setLocationMarker_1(QVariant, QVariant);

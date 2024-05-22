@@ -3,6 +3,9 @@
 
 #include <QThread>
 #include <QMutex>
+#include <QSerialPort>
+#include <QDebug>
+#include <QFile>
 #include "gpsparser.h"
 
 class SerialThread : public QThread

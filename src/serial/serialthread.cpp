@@ -1,9 +1,5 @@
 #include "serialthread.h"
 
-#include <QSerialPort>
-#include <QDebug>
-#include <QFile>
-
 SerialThread::SerialThread(QObject *parent)
     : QThread(parent)
     , m_gpsTracker()

@@ -23,17 +23,30 @@ Rectangle {
     Map {
         id: map
         anchors.fill: parent
-        // activeMapType: map.supportedMapTypes[1]
+        // activeMapType: map.supportedMapTypes[map.supportedMapTypes.length - 1]
         zoomLevel: 13
         center: QtPositioning.coordinate(32.939817922584034, -106.92178417135429);
-        plugin: Plugin {
+        plugin: offlinePlugin
+        Plugin {
+            id: offlinePlugin
             name: 'osm';
             PluginParameter {
                 name: 'osm.mapping.offline.directory'
                 value: ':/offline_tiles/'
             }
         }
+        // TODO: Fix the API key
+        // Plugin{
+        //     id: onlinePlugin
+        //     name: 'osm'
+        //     PluginParameter{
+        //         name:'osm.mapping.custom.host'
+        //         value:'https://tile.openstreetmap.org'
+        //     }
+        // }
+
         MapPolyline{
+            id: mapline;
             line.width: 3
             line.color: "blue"
             path: [
@@ -61,6 +74,10 @@ Rectangle {
             map.removeMapItem(markers[i])
         }
         markers = []
+    }
+
+    function clearLine(){
+        map.removeMapItem(mapline);
     }
 
     function addMarker(lat, lon, component) {

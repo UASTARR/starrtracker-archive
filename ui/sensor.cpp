@@ -48,7 +48,6 @@ Sensor::Sensor(QWidget *parent) :
     auto Obje = ui->QW_Map->rootObject();
     connect(this, SIGNAL(setLocationMarker_1(QVariant, QVariant)), Obje, SLOT(setLocationMarker_1(QVariant, QVariant)));
     connect(this, SIGNAL(setLocationMarker_2(QVariant, QVariant)), Obje, SLOT(setLocationMarker_2(QVariant, QVariant)));
-
     // Test map positioning
     // emit setLocationMarker_1(32.940663834569825, -106.92168026906077);
     // emit setLocationMarker_2(32.822916006258545, -106.76134576212984);
@@ -224,4 +223,39 @@ void Sensor::on_next_clicked()
 void Sensor::on_prev_clicked()
 {
     ui->stackedDisplay->setCurrentIndex(0);
+}
+
+void Sensor::resetScreen()
+{
+    qt_time.clear();
+    qt_x.clear();
+    qt_y.clear();
+    qt_alt.clear();
+    graphCount = 0;
+    values[1]->addGraph(qt_time, qt_x);
+    values[2]->addGraph(qt_time, qt_y);
+    values[3]->addGraph(qt_time, qt_alt);
+    QQuickItem *rootItem = ui->QW_Map->rootObject();
+    if (rootItem) {
+        QMetaObject::invokeMethod(rootItem, "clearMarkers");
+        QMetaObject::invokeMethod(rootItem, "clearLine");
+    }
+    lat = 0;
+    lon = 0;
+}
+
+void Sensor::on_resetBtn1_clicked()
+{
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Confirmation clear screen", "Are you sure you want to clear the display screen. The stored data will not be deleted.");
+    if (reply == QMessageBox::Yes){
+        resetScreen();
+    }
+}
+
+void Sensor::on_resetBtn2_clicked()
+{
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Confirmation clear screen", "Are you sure you want to clear the display screen. The stored data will not be deleted.");
+    if (reply == QMessageBox::Yes){
+        resetScreen();
+    }
 }

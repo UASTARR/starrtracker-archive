@@ -7,12 +7,13 @@
 class Graph : public QObject
 {
     Q_OBJECT
+
 public:
     explicit Graph(QCustomPlot *customPlot, QObject *parent = nullptr);
     ~Graph();
-
     void setGraph(const int rangeX, const int rangeY);
     void addGraph(const QVector<double> &x, const QVector<double> &y);
+
 private:
     QCustomPlot *m_customPlot;
     QVector<double> qt_time;

@@ -441,6 +441,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
            <string>Next</string>
           </property>
          </widget>
+         <widget class="QPushButton" name="resetBtn1">
+          <property name="geometry">
+           <rect>
+            <x>680</x>
+            <y>10</y>
+            <width>105</width>
+            <height>29</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Reset Plot</string>
+          </property>
+         </widget>
         </widget>
         <widget class="QWidget" name="Graph">
          <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -574,6 +587,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
           </property>
           <property name="text">
            <string>Prev</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="resetBtn2">
+          <property name="geometry">
+           <rect>
+            <x>680</x>
+            <y>10</y>
+            <width>105</width>
+            <height>29</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Reset Plot</string>
           </property>
          </widget>
         </widget>
