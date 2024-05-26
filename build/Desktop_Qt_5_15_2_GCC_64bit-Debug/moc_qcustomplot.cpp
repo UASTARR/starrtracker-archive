@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../src/graph/qcustomplot.h"
+#include "../../../../newfolder/src/graph/qcustomplot.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #include <QtCore/QSharedPointer>
