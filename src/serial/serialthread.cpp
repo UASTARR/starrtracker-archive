@@ -23,6 +23,14 @@ void SerialThread::startLocalDataThread(const QString &file)
     {
         start();
     }
+
+    timeouttimer.setInterval(2000);
+    connect(&timeouttimer, &QTimer::timeout, [&]() {
+        qDebug() << "Timer Timed Out: Connection Established";
+        emit dataStatus(m_gpsTracker.getStatus());
+    });
+    timeouttimer.start();
+    m_gpsTracker.StartTimer();
 }
 
 void SerialThread::startSerialDataThread(const QString &port, const qint32 &baud, const bool &saveData)
@@ -49,6 +57,7 @@ void SerialThread::startSerialDataThread(const QString &port, const qint32 &baud
 void SerialThread::stopSerialThread()
 {
     setStopFlag(true);
+    timeouttimer.stop();
 }
 
 void SerialThread::setStopFlag(bool newState)

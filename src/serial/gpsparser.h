@@ -19,13 +19,6 @@ class GPSParser : public QObject
 public:
     explicit GPSParser(QObject *parent = nullptr);
     ~GPSParser();
-    QStringList parse(QByteArray& data);
-    double getLongitude();
-    double getLatitude();
-
-private:
-    double longitude_;
-    double latitude_;
     void storeData(QString &dataToStore);
     bool validateData() const;
     QString getGpsName();
