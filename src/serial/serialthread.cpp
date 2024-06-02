@@ -26,7 +26,6 @@ void SerialThread::startLocalDataThread(const QString &file)
 
     timeouttimer.setInterval(2000);
     connect(&timeouttimer, &QTimer::timeout, [&]() {
-        qDebug() << "Timer Timed Out: Connection Established";
         emit dataStatus(m_gpsTracker.getStatus());
     });
     timeouttimer.start();
@@ -47,7 +46,6 @@ void SerialThread::startSerialDataThread(const QString &port, const qint32 &baud
 
     timeouttimer.setInterval(2000);
     connect(&timeouttimer, &QTimer::timeout, [&]() {
-        qDebug() << "Timer Timed Out: Connection Established";
         emit dataStatus(m_gpsTracker.getStatus());
     });
     timeouttimer.start();

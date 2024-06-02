@@ -25,7 +25,7 @@ Rectangle {
         anchors.fill: parent
         // activeMapType: map.supportedMapTypes[map.supportedMapTypes.length - 1]
         zoomLevel: 13
-        maximumZoomLevel: 13
+        // maximumZoomLevel: 13
         center: QtPositioning.coordinate(32.939817922584034, -106.92178417135429);
         plugin: offlinePlugin
         Plugin {

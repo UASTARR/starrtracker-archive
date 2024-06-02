@@ -24,7 +24,7 @@ public:
 signals:
     void dataReady(const GpsData &data);
     void error(const QString &s);
-    void dataStatus(const status age);
+    void dataStatus(const connectionStatus status);
 
 private:
     void run() override;

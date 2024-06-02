@@ -28,7 +28,7 @@ private slots:
     void writeData(const QByteArray &data);
     void handleError(const QString &s);
     void handleDataReady(const GpsData &data);
-    void handleConnectionStatus(const status &connectionStatus);
+    void handleConnectionStatus(const connectionStatus &status);
     void openSerialPort();
     void closeSerialPort();
     void on_prev_clicked();

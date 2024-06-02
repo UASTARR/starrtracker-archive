@@ -13,6 +13,9 @@ struct GpsData {
     float longitude; // + for E, - for W
     float altitude;
     int n_sat;
+    int n_count_40;
+    int n_count_32;
+    int n_count_24;
     int rssi;
     float horVelocity;
     float verVelocity;
@@ -22,9 +25,12 @@ struct GpsData {
     qint64 age = 0;
 };
 
-struct status {
-    double age;
-    int rssi;
+struct connectionStatus {
+    double time;
+    int n_sat;
+    int n_count_40;
+    int n_count_32;
+    int n_count_24;
 };
 
 struct GPSFormat {
@@ -41,6 +47,9 @@ struct GPSFormat {
     virtual float get_long(QStringList &data_string) = 0;   // Longitude    (degrees)
     virtual float get_alt(QStringList &data_string) = 0;    // Altitude     (m)
     virtual int get_n_sat(QStringList &data_string) = 0;    // No. of Satellites    (number)
+    virtual int get_n_count_40(QStringList &data_string) = 0;   // No. of Satellites with 40db and larger
+    virtual int get_n_count_32(QStringList &data_string) = 0;   // No. of Satellites with 32db and larger
+    virtual int get_n_count_24(QStringList &data_string) = 0;   // No. of Satellites with 24db and larger
     virtual int get_rssi(QStringList &data_string) = 0;     // RSSI         (-120 dBm to 0 dBm)
     virtual float get_hor_velocity(QStringList &data_string) = 0;  // Horizontal Velocity (Ground Speed)    (m/s)
     virtual float get_ver_velocity(QStringList &data_string) = 0;  // Vertical Velocity (Air Speed)         (m/s)
@@ -104,6 +113,15 @@ struct Featherweight : public GPSFormat {
     int get_n_sat(QStringList &data_string) override{
         return data_string[23].toInt();
     }
+    int get_n_count_40(QStringList &data_string) override {
+        return data_string[26].toInt();
+    }
+    int get_n_count_32(QStringList &data_string) override {
+        return data_string[25].toInt();
+    }
+    int get_n_count_24(QStringList &data_string) override {
+        return data_string[24].toInt();
+    }
     int get_rssi(QStringList &data_string) override {
         return data_string[16].toInt();
     }
@@ -127,7 +145,7 @@ struct TeleGPS : public GPSFormat {
         return " ";
     }
     QStringList get_packet() override {
-        return {"5"};
+        return {"5", "6"};
     }
     QList<int> get_size() override {
         return {32};
@@ -170,8 +188,17 @@ struct TeleGPS : public GPSFormat {
     int get_n_sat(QStringList &data_string) override{
         return data_string[5].toInt();
     }
+    int get_n_count_40(QStringList &data_string) override {
+        return data_string[6].toInt();
+    }
+    int get_n_count_32(QStringList &data_string) override {
+        return data_string[7].toInt();
+    }
+    int get_n_count_24(QStringList &data_string) override {
+        return data_string[8].toInt();
+    }
     int get_rssi(QStringList &data_string) override {
-        return data_string[22].toInt();
+        return data_string[23].toInt();
     }
     float get_batt_level(QStringList &data_string) override {
         return 0;

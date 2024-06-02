@@ -2,7 +2,7 @@
 #include "ui_sensor.h"
 
 Q_DECLARE_METATYPE(GpsData)
-Q_DECLARE_METATYPE(status)
+Q_DECLARE_METATYPE(connectionStatus)
 
 Sensor::Sensor(QWidget *parent):
     QWidget{parent},
@@ -13,7 +13,7 @@ Sensor::Sensor(QWidget *parent):
     ui->portSelect->clear();
 
     qRegisterMetaType<GpsData>();
-    qRegisterMetaType<status>();
+    qRegisterMetaType<connectionStatus>();
 
     // Connect the connection lambda function to the clicked signal of serialConnectionButton
     connect(ui->serialConnectionButton, &QPushButton::clicked, this, &Sensor::openSerialPort);
@@ -151,7 +151,7 @@ void Sensor::handleDataReady(const GpsData &data)
     qt_alt.append(data.altitude);
 
     ui->gpstype->setText(data.gps_name);
-    ui->textbrowser->setText(tr("Time: %1\nLatitude: %2\nLongitude: %3\nAltitude: %4\nNo. of SAT: %5\n").arg(data.time.toString("HH:mm:ss"), QString::number(data.latitude), QString::number(data.longitude), QString::number(data.altitude), QString::number(data.n_sat)));
+    ui->textbrowser->setText(tr("Time: %1\nLatitude: %2\nLongitude: %3\nAltitude: %4\nNo. of SAT: %5\nRSSI: %6\n").arg(data.time.toString("HH:mm:ss"), QString::number(data.latitude), QString::number(data.longitude), QString::number(data.altitude), QString::number(data.n_sat), QString::number(data.rssi)));
 
     if (lat == 0 && lon == 0){
         lat = data.latitude;
@@ -165,14 +165,14 @@ void Sensor::handleDataReady(const GpsData &data)
     values[3]->addGraph(qt_time, qt_alt);
 }
 
-void Sensor::handleConnectionStatus(const status &connectionStatus){
-    qDebug() << connectionStatus.age << connectionStatus.rssi;
-    if (connectionStatus.rssi > 0 or connectionStatus.rssi < -60 or connectionStatus.age > 6){
+void Sensor::handleConnectionStatus(const connectionStatus &status){
+    qDebug() << "Connection Status: " << status.time << status.n_sat << status.n_count_24 << status.n_count_32 << status.n_count_40;
+    if (status.time < 0 or status.time > 5 or (status.n_count_24 < 2 and status.n_count_32 < 2 and status.n_count_40 < 2)) {
         ui->ledIndicator->setState(QLedLabel::StateError);
-    } else if (connectionStatus.age > 4 or connectionStatus.rssi < -40){
+    } else if (status.time > 2 or (status.n_count_24 < 4 and status.n_count_32 < 4 and status.n_count_40 < 1)) {
         ui->ledIndicator->setState(QLedLabel::StateWarning);
     } else {
-        ui->ledIndicator->setState(QLedLabel::StateOk);
+         ui->ledIndicator->setState(QLedLabel::StateOk);
     }
 }
 

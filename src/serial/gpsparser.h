@@ -26,7 +26,7 @@ public:
     GpsData getData();
     void parse(QString &newdata, bool &storeGPSData);
     void StartTimer();
-    status getStatus();
+    connectionStatus getStatus();
 
 private:
     GpsData *data;
