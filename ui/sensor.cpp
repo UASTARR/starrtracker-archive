@@ -156,8 +156,9 @@ void Sensor::handleDataReady(const GpsData &data)
     if (lat == 0 && lon == 0){
         lat = data.latitude;
         lon = data.longitude;
+        emit setLocationMarker_1(lat, lon);
     }
-    emit setLocationMarker_1(lat, lon);
+
     emit setLocationMarker_2(data.latitude, data.longitude);
 
     values[1]->addGraph(qt_time, qt_x);
@@ -202,7 +203,7 @@ void Sensor::resetScreen()
     values[3]->addGraph(qt_time, qt_alt);
     QQuickItem *rootItem = ui->QW_Map->rootObject();
     if (rootItem) {
-        QMetaObject::invokeMethod(rootItem, "clearMarkers");
+        QMetaObject::invokeMethod(rootItem, "clearMarkers", Q_ARG(QVariant, 0));
         QMetaObject::invokeMethod(rootItem, "clearLine");
     }
     lat = 0;
