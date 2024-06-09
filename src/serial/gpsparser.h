@@ -19,22 +19,25 @@ class GPSParser : public QObject
 public:
     explicit GPSParser(QObject *parent = nullptr);
     ~GPSParser();
-    void storeData(QString &dataToStore);
-    bool validateData() const;
+    void storeData(QString &rawData, QString &parsedData);
+    bool validateData();
     QString getGpsName();
     void clearData() const;
     GpsData getData();
-    void parse(QString &newdata, bool &storeGPSData);
+    void parse(QString &rawdata, bool &storeGPSData, bool &serial);
     void StartTimer();
     connectionStatus getStatus();
 
+public slots:
+    void clearFix(float lati, float loni);
+
 private:
     GpsData *data;
-    QFile file;
+    QFile file_raw;
+    QFile file_parsed;
     QElapsedTimer elapsedTime;
     QString parseTeleGPS(const QString &data);
-
-signals:
+    float latFix = 0, lonFix = 0;
 };
 
 #endif // GPSPARSER_H

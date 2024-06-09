@@ -14,9 +14,11 @@ Rectangle {
     Map {
         id: map
         anchors.fill: parent
-        zoomLevel: 13
+        // activeMapType: map.supportedMapTypes[map.supportedMapTypes.length - 1]
+        zoomLevel: 14
         center: QtPositioning.coordinate(32.939817922584034, -106.92178417135429);
         plugin: offlinePlugin
+
         Plugin {
             id: offlinePlugin
             name: 'osm';
@@ -24,6 +26,11 @@ Rectangle {
                 name: 'osm.mapping.offline.directory'
                 value: ':/offline_tiles/'
             }
+        }
+
+        Plugin{
+            id: onlinePlugin
+            name: 'osm'
         }
 
         MapPolyline{
@@ -72,7 +79,7 @@ Rectangle {
     }
 
     function clearLine(){
-        map.removeMapItem(mapline);
+        mapline.path = [];
     }
 
     Component{

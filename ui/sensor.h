@@ -12,6 +12,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QQmlContext>
+#include <QQuickWidget>
 #include <src/graph/Graph.h>
 #include <src/graph/qcustomplot.h>
 #include "../src/serial/serialthread.h"
@@ -35,6 +36,7 @@ private slots:
     void on_next_clicked();
     void on_resetBtn1_clicked();
     void on_resetBtn2_clicked();
+    void appendOutputData(const QString &data, const QString &color);
 
 public:
     explicit Sensor(QWidget *parent = nullptr);
@@ -44,18 +46,20 @@ private:
     Ui::Sensor *ui;
     QSerialPort *m_serial = nullptr;
     SerialThread m_thread;
-    unsigned long time = 5000; // Time for program to wait for serialThread to close, in ms
-    QMap<int, Graph*> values;
-    QVector<double> qt_time, qt_x, qt_y, qt_alt;
-    u_int graphCount = 0;
+    GPSParser m_parser;
+    unsigned long time = 2000; // Time for program to wait for serialThread to close, in ms
+    QMap<int, Graph*> values{};
+    QVector<double> qt_time{}, qt_x{}, qt_y{}, qt_alt{};
+    u_int graphCount{};
     u_int checkCount = 1000;
-    void attemptSerialReconnect();
-    float lat, lon;
+    float lat{}, lon{};
     void resetScreen();
 
+    void setUIElementsEnabled(bool enabled);
 signals:
     void setLocationMarker_1(QVariant, QVariant);
     void setLocationMarker_2(QVariant, QVariant);
+    void clearFix(float, float);
 };
 
 #endif // SENSOR_H

@@ -20,11 +20,17 @@ public:
     void startLocalDataThread(const QString &file);
     void startSerialDataThread(const QString &port, const qint32 &baud, const bool &saveData);
     void stopSerialThread();
+    void resetTimer();
+
+public slots:
+    void clearFixSS(float lati, float loni);
 
 signals:
     void dataReady(const GpsData &data);
     void error(const QString &s);
     void dataStatus(const connectionStatus status);
+    void appendData(const QString &data, const QString &color);
+    void clearFix(float, float);
 
 private:
     void run() override;
@@ -42,6 +48,8 @@ private:
     QString getFile();
     GPSParser m_gpsTracker;
     QTimer timeouttimer;
+    QMetaObject::Connection connection;
+    unsigned long time = 5000;
 };
 
 #endif // SERIALTHREAD_H

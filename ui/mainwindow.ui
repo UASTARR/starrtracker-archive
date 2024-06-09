@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1300</width>
-    <height>840</height>
+    <width>1440</width>
+    <height>900</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -19,9 +25,21 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1300</width>
-      <height>815</height>
+      <width>1440</width>
+      <height>874</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
     </property>
     <property name="tabsClosable">
      <bool>true</bool>
@@ -33,7 +51,7 @@
    <widget class="QPushButton" name="addSensor">
     <property name="geometry">
      <rect>
-      <x>1190</x>
+      <x>1330</x>
       <y>0</y>
       <width>105</width>
       <height>29</height>
@@ -49,7 +67,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1300</width>
+     <width>1440</width>
      <height>26</height>
     </rect>
    </property>
@@ -82,4 +100,3 @@
  <resources/>
  <connections/>
 </ui>
-

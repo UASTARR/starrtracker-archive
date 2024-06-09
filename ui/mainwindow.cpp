@@ -15,7 +15,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_tabWindow_tabCloseRequested(int index)
 {
-    ui->tabWindow->removeTab(index);
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Confirmation Close Tab", "Are you sure you want to close this tab");
+    if (reply == QMessageBox::Yes){
+        ui->tabWindow->removeTab(index);
+    }
 }
 
 void MainWindow::on_addSensor_clicked()
@@ -23,5 +26,3 @@ void MainWindow::on_addSensor_clicked()
     ui->tabWindow->addTab(new Sensor(), QString("GPS %0").arg(ui->tabWindow->count() + 1));
     ui->tabWindow->setCurrentIndex(ui->tabWindow->count() - 1);
 }
-
-

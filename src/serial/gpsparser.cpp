@@ -1,12 +1,19 @@
 #include "gpsparser.h"
 
 GPSParser::GPSParser(QObject *parent) : QObject(parent), data(new GpsData()) {
-    QString filename = "GPSData.txt";
+    QString filename = "GPSData_raw_0.txt";
     int count = 0;
     while (QFile::exists(filename)) {
         filename = QString("GPSData_%1.txt").arg(count++);
     }
-    file.setFileName(filename);
+    file_raw.setFileName(filename);
+
+    filename = "GPSData_parsed_0.txt";
+    count = 0;
+    while (QFile::exists(filename)){
+        filename = QString("GPSData_parsed_%1.txt").arg(count++);
+    }
+    file_parsed.setFileName(filename);
 }
 
 GPSParser::~GPSParser() {
@@ -17,8 +24,7 @@ QString GPSParser::getGpsName(){
     return data->gps_name;
 }
 
-bool GPSParser::validateData() const{
-    qDebug() << data->gps_name << data->time << data->latitude << data->longitude << data->altitude << data->rssi;
+bool GPSParser::validateData(){
     // Check if gps_name is empty
     if (data->gps_name.isEmpty()) {
         return false;
@@ -30,13 +36,24 @@ bool GPSParser::validateData() const{
     }
 
     // Check if latitude is within valid range
-    if (data->latitude < -90.0f || data->latitude > 90.0f) {
+    if (data->latitude < -90.0f || data->latitude > 90.0f){
         return false;
     }
 
     // Check if longitude is within valid range
     if (data->longitude < -180.0f || data->longitude > 180.0f) {
         return false;
+    }
+
+    if (latFix != 0 & lonFix != 0){
+        if (data->latitude > latFix + 0.1 || data->latitude < latFix - 0.1){
+            return false;
+        }
+        if (data->longitude > lonFix + 0.15 || data->longitude < lonFix - 0.15){
+            return false;
+        }
+    } else {
+        clearFix(data->latitude, data->longitude);
     }
 
     // Check if altitude is a reasonable value (can be negative for below sea level)
@@ -52,11 +69,9 @@ bool GPSParser::validateData() const{
     // }
 
     // Check if n_sat (number of satellites) is non-negative
-    // if (data->n_sat < 0) {
-    //     return false;
-    // }
-
-
+    if (data->n_sat < 0) {
+        return false;
+    }
 
     // Check if horizontal and vertical velocities are non-negative
     // For simplicity, assuming velocities must be between 0 and 500 m/s
@@ -87,18 +102,35 @@ void GPSParser::clearData() const{
     data->pck_snt = -1;
 }
 
-void GPSParser::storeData(QString &dataToStore){
-    if (file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text)) {
-        QTextStream stream(&file);
+void GPSParser::storeData(QString &rawData, QString &parsedData){
+    if (file_raw.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text)) {
+        QTextStream stream(&file_raw);
 
-        if (file.size() == 0) {
+        if (file_raw.size() == 0) {
             QDateTime currentDateTime = QDateTime::currentDateTime();
             stream << data->gps_name << Qt::endl;
-            stream << currentDateTime.toString("yyyy-MM-dd hh:mm:ss");
+            stream << currentDateTime.toString("yyyy-MM-dd hh:mm:ss\n\n");
         }
 
-        stream << dataToStore << Qt::endl;
-        file.close();
+        stream << rawData;
+
+        file_raw.close();
+    } else {
+        QTextStream(stdout) << tr("Error opening the file for writing\n");
+    }
+
+    if (file_parsed.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text)) {
+        QTextStream stream(&file_parsed);
+
+        if (file_parsed.size() == 0) {
+            QDateTime currentDateTime = QDateTime::currentDateTime();
+            stream << data->gps_name << Qt::endl;
+            stream << currentDateTime.toString("yyyy-MM-dd hh:mm:ss\n\n");
+        }
+
+        stream << parsedData;
+
+        file_parsed.close();
     } else {
         QTextStream(stdout) << tr("Error opening the file for writing\n");
     }
@@ -108,12 +140,16 @@ GpsData GPSParser::getData(){
     return *data;
 }
 
-void GPSParser::parse(QString &newdata, bool &storeGPSData){
-    if (!newdata.isEmpty()){
+void GPSParser::parse(QString &rawdata, bool &storeGPSData, bool &serial){
+    bool valid = true;
+    if (!rawdata.isEmpty()){
         // Telegps
-        if (newdata.startsWith("TELEM")){
+        QString newdata;
+        if (rawdata.startsWith("TELEM")){
             TeleGPS *parserformat = new TeleGPS();
-            newdata = parseTeleGPS(newdata);
+            if (serial){
+                newdata = parseTeleGPS(rawdata);
+            }
             QStringList dataStrList = newdata.split(parserformat->get_seperator());
             if (dataStrList.length() > 5){
                 if (parserformat->get_packet_type(dataStrList) == parserformat->get_packet().at(0) &&
@@ -121,6 +157,7 @@ void GPSParser::parse(QString &newdata, bool &storeGPSData){
                     data->gps_name = parserformat->get_name();
                     data->time = parserformat->get_time(dataStrList);
                     data->date = parserformat->get_date(dataStrList);
+                    data->valid = parserformat->get_valid(dataStrList);
 
                     data->latitude = parserformat->get_lat(dataStrList);
                     data->longitude = parserformat->get_long(dataStrList);
@@ -140,9 +177,9 @@ void GPSParser::parse(QString &newdata, bool &storeGPSData){
             }
             delete parserformat;
         } // Featherweight
-        else if (newdata.startsWith("@")){
+        else if (rawdata.startsWith("@")){
             Featherweight *parserformat = new Featherweight();
-            QStringList dataStrList = newdata.split(parserformat->get_seperator());
+            QStringList dataStrList = rawdata.split(parserformat->get_seperator());
             for (int i = 0; i < dataStrList.size(); ++i) {
                 if (dataStrList.at(i).isEmpty()) {
                     dataStrList.removeAt(i);
@@ -155,6 +192,7 @@ void GPSParser::parse(QString &newdata, bool &storeGPSData){
                     data->gps_name = parserformat->get_name();
                     data->time = parserformat->get_time(dataStrList);
                     data->date = parserformat->get_date(dataStrList);
+                    data->valid = parserformat->get_valid(dataStrList);
 
                     data->latitude = parserformat->get_lat(dataStrList);
                     data->longitude = parserformat->get_long(dataStrList);
@@ -177,12 +215,33 @@ void GPSParser::parse(QString &newdata, bool &storeGPSData){
                     data->battLevel = parserformat->get_batt_level(dataStrList);
                 }
             }
-
             delete parserformat;
+        } else {
+            valid = false;
         }
 
-        if (storeGPSData){
-            storeData(newdata);
+        if (storeGPSData & valid){
+            QString parseddata = QString(tr("%1 time %2 date %3 valid %4 lat %5 lon %6 alt %7 horVel %8 verVel %9 totalSat %10 sat24 %11 sat32 %12 sat40 %13 rssi %14 pckSent %15 pckRec %16 battLevel %17 age %18"))
+                                     .arg(QString(data->gps_name))
+                                     .arg(data->time.toString())
+                                     .arg(data->date.toString())
+                                     .arg(QString::number(data->valid))
+                                     .arg(QString::number(data->latitude))
+                                     .arg(QString::number(data->longitude))
+                                     .arg(QString::number(data->altitude))
+                                     .arg(QString::number(data->horVelocity))
+                                     .arg(QString::number(data->verVelocity))
+                                     .arg(QString::number(data->n_sat))
+                                     .arg(QString::number(data->n_count_24))
+                                     .arg(QString::number(data->n_count_32))
+                                     .arg(QString::number(data->n_count_40))
+                                     .arg(QString::number(data->rssi))
+                                     .arg(QString::number(data->pck_snt))
+                                     .arg(QString::number(data->pck_rcv))
+                                     .arg(QString::number(data->battLevel))
+                                     .arg(QString::number(data->age));
+
+            storeData(rawdata, parseddata);
         }
     }
 }
@@ -201,7 +260,6 @@ QString GPSParser::parseTeleGPS(const QString &data)
         }
         bool ok = false;
         modifiedData += "TELEM ";
-        qDebug() << reversedData;
         auto appendNumber = [&](int length, int divisor = 1, char ch = ' ') {
             modifiedData += QString::number(reversedData.rightRef(length).toUInt(&ok, 16) / divisor) + ch;
             reversedData.chop(length);
@@ -259,10 +317,7 @@ QString GPSParser::parseTeleGPS(const QString &data)
                 modifiedData += QString::number(reversedData.rightRef(2).toUInt(&ok, 16) * 2) + ' ';
                 reversedData.chop(2);
                 appendNumber(2);
-                intShort = reversedData.rightRef(2).toUInt(&ok, 16);
-                if (intShort & 0x80){
-                    intShort -= 0x100;
-                }
+                intShort = reversedData.rightRef(2).toUInt(&ok, 16) / 2 - 74;
                 reversedData.chop(2);
                 modifiedData.append(QString::number(intShort)+ " ");
                 appendNumber(2);
@@ -307,12 +362,18 @@ void GPSParser::StartTimer(){
 connectionStatus GPSParser::getStatus(){
     connectionStatus status;
     if (elapsedTime.isValid()){
-        status.time = elapsedTime.elapsed() / 1000;
+        data->age = elapsedTime.elapsed() / 1000;
     }
+    status.time = data->age;
     status.n_sat = data->n_sat;
     status.n_count_24 = data->n_count_24;
     status.n_count_32 = data->n_count_32;
     status.n_count_40 = data->n_count_40;
     return status;
+}
+
+void GPSParser::clearFix(float lati, float loni){
+    latFix = lati;
+    lonFix = loni;
 }
 

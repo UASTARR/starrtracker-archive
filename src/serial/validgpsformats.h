@@ -198,7 +198,8 @@ struct TeleGPS : public GPSFormat {
         return data_string[8].toInt();
     }
     int get_rssi(QStringList &data_string) override {
-        return data_string[23].toInt();
+        // return data_string[23].toInt();
+        return data_string[23].toInt() / 2 - 74;
     }
     float get_batt_level(QStringList &data_string) override {
         return 0;
