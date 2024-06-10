@@ -67,6 +67,14 @@ void SerialThread::setStopFlag(bool newState)
 
 bool SerialThread::getStopFlag()
 {
+    // Previously used code:
+    // bool temp;
+    // m_mutex.lock();
+    // temp = m_stop;
+    // m_mutex.unlock();
+    // return temp;
+
+    // Better Version
     const QMutexLocker locker(&m_mutex);
     return m_stop;
 }
