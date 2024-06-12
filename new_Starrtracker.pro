@@ -3,6 +3,7 @@ QT       += core gui
 QT       += serialport
 QT       += qml quick
 QT       += quickwidgets
+QT       += location positioning
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++17

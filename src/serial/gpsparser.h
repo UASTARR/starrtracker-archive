@@ -24,7 +24,7 @@ public:
     QString getGpsName();
     void clearData() const;
     GpsData getData();
-    void parse(QString &rawdata, bool &storeGPSData, bool &serial);
+    void parse(QString &rawdata, bool &storeGPSData);
     void StartTimer();
     connectionStatus getStatus();
 

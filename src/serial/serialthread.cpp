@@ -141,7 +141,7 @@ void SerialThread::run()
                 if (!data.isEmpty()){
                     emit appendData(data, "black");
 
-                    m_gpsTracker.parse(data, m_save_data, m_serial_mode);
+                    m_gpsTracker.parse(data, m_save_data);
                     if (m_gpsTracker.validateData())
                     {
                         emit dataReady(m_gpsTracker.getData());
@@ -170,7 +170,7 @@ void SerialThread::run()
             if (!data.isEmpty()){
                 emit appendData(data, "black");
                 if (data != ""){
-                    m_gpsTracker.parse(data, m_save_data, m_serial_mode);
+                    m_gpsTracker.parse(data, m_save_data);
                     if (m_gpsTracker.validateData())
                     {
                         emit dataReady(m_gpsTracker.getData());

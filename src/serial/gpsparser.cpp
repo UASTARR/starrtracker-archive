@@ -45,16 +45,15 @@ bool GPSParser::validateData(){
         return false;
     }
 
-    if (latFix != 0 & lonFix != 0){
+    if ((latFix != 0) & (lonFix != 0)){
         if (data->latitude > latFix + 0.1 || data->latitude < latFix - 0.1){
             return false;
         }
         if (data->longitude > lonFix + 0.15 || data->longitude < lonFix - 0.15){
             return false;
         }
-    } else {
-        clearFix(data->latitude, data->longitude);
     }
+    clearFix(data->latitude, data->longitude);
 
     // Check if altitude is a reasonable value (can be negative for below sea level)
     // For simplicity, we'll assume altitude must be between -500 and 70000 meters
@@ -112,7 +111,7 @@ void GPSParser::storeData(QString &rawData, QString &parsedData){
             stream << currentDateTime.toString("yyyy-MM-dd hh:mm:ss\n\n");
         }
 
-        stream << rawData;
+        stream << rawData << Qt::endl;
 
         file_raw.close();
     } else {
@@ -128,7 +127,7 @@ void GPSParser::storeData(QString &rawData, QString &parsedData){
             stream << currentDateTime.toString("yyyy-MM-dd hh:mm:ss\n\n");
         }
 
-        stream << parsedData;
+        stream << parsedData << Qt::endl;
 
         file_parsed.close();
     } else {
@@ -140,16 +139,14 @@ GpsData GPSParser::getData(){
     return *data;
 }
 
-void GPSParser::parse(QString &rawdata, bool &storeGPSData, bool &serial){
+void GPSParser::parse(QString &rawdata, bool &storeGPSData){
     bool valid = true;
     if (!rawdata.isEmpty()){
         // Telegps
         QString newdata;
         if (rawdata.startsWith("TELEM")){
             TeleGPS *parserformat = new TeleGPS();
-            if (serial){
-                newdata = parseTeleGPS(rawdata);
-            }
+            newdata = parseTeleGPS(rawdata);
             QStringList dataStrList = newdata.split(parserformat->get_seperator());
             if (dataStrList.length() > 5){
                 if (parserformat->get_packet_type(dataStrList) == parserformat->get_packet().at(0) &&
